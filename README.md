@@ -1,13 +1,16 @@
 # Título del trabajo
 
-Dominó con Arduino
+Dominó
 
 ## Integrantes del equipo
 
-Sergio de Paula Moratilla  sergio-dp
-Gil Carvalho Tavares       GilCarvalho55175
-Christian Alva Sarmiento   Christian7600
-Alejandro Da Silva Ucedo   AlejandroDaSilva501
+Sergio de Paula Moratilla - sergio-dp
+
+Gil Carvalho Tavares - GilCarvalho55175
+
+Christian Alva Sarmiento - Christian7600
+
+Alejandro Da Silva Ucedo - AlejandroDaSilva501
 
 ## Objetivos del trabajo
 
