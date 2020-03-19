@@ -4,7 +4,7 @@
 
 int main()
 {
-	// creamos una matriz que contenga las 28 filas, siendo la primera columna el número asociado a cada ficha
+	// creamos una matriz que contenga las 28 filas, siendo la primera columna el nÃºmero asociado a cada ficha
 	int fichas[28][3] = // Matriz 28 x 3
 	{
 		{0, 0, 0}, // fila 1
@@ -36,8 +36,8 @@ int main()
 		{26, 5, 6}, // fila 27
 		{27, 6, 6}  // fila 28
 	};
-	int a, b, i, j, jugadores;
-	printf("Selecciona el número de jugadores: ");
+	int a, i, j, jugadores;
+	printf("Selecciona el nÃºmero de jugadores: ");
 	scanf("%i", &jugadores);
 	srand(time(NULL));
 	for(j=1; j<=jugadores; j++)
