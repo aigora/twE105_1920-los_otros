@@ -164,6 +164,39 @@ int main()
 	}
 	turno=(turno+1)%4; // avanzamos 1 turno, de forma que le toque al siguiente jugador
 	juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, jugadores, turno, final);
+	// antes de empezar con el desarrollo de la partida, voy a explicar que tenemos hasta ahora y que voy a hacer en el bucle do-while
+	//  hasta ahora tenemos:
+		// varios jugadores con 7 fichas cada uno menos 1 de ellos, el que haya colocado la ficha más alta, que tiene 6
+		// el vector tablero lleno con 28 ceros salvo su primera posición "tablero[0]", que tiene el número asociado a la ficha más alta que se haya repartido
+	// a partir de ahora, cada vez que se ejecute este gran bucle do-while va a corresponder al turno de 1 único jugador, de forma que se repitirá hasta que
+	// o 1 de los jugadores se quede sin fichas o, en una ronda completa, nadie pueda poner ficha. Para ello, voy a usar las siguientes variables:
+		// contador: va a simbolizar la última casilla del tablero con ficha y, cada vez que un jugador ponga, le sumaré 1 a su valor
+		// final: cada vez que 1 jugador no pueda poner, le sumaré 1 a su valor pero, en caso de que algún jugador ponga, volverá a valer 0
+		// repetición: cuando algún jugador ponga ficha valdrá 1, de forma que solo puede colocar cuando repeicion=1. Cada vex que avance de turno, valdrá 0
+		// ganador: sirve para determinar quien ha ganado. Cada vez que un jugador ponga, valdrá el número de ese jugador, es decir, si coloca el jugador 1, valdrá 1
+	do
+	{
+		for(i=0; i<7; i++) // este bucle sirve para recorrer 1 a 1 las fichas de cada jugador
+		{
+			switch (turno) // dependiendo de a quien le toque, ejecutará 1 caso u otro
+						   // la única diferencia entre los casos es el vector que usa para ver si puede colocar ficha o no
+			{
+				case 0: // turno del jugador 1
+					
+					break;
+				case 1: // turno del jugador 2
+					
+					break;
+				case 2: // turno del jugador 3
+					
+					break;
+				case 3: // turno del jugador 4
+					
+					break;
+			}
+		}
+	} while(final<3);
+	printf("\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!", ganador);
 	return 0;
 }
 
