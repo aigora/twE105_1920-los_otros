@@ -1099,26 +1099,18 @@ void juego(ficha c[], int v[], int w[], int x[], int y[], int z[], int n, int m,
 				case 1: //imprime las fichas del jugador 1
 					if(v[i]>0) // si el número es positivo
 					imprimirnormal(c, v, i);
-					else if(v[i]<0) // si el número es negativo
-					imprimirreves(c, v, i);
 					break;
 				case 2: //imprime las fichas del jugador 2
 					if(w[i]>0)
 					imprimirnormal(c, w, i);
-					else if(w[i]<0)
-					imprimirreves(c, w, i);
 					break;
 				case 3: //imprime las fichas del jugador 3
 					if(x[i]>0)
 					imprimirnormal(c, x, i);
-					else if(x[i]<0)
-					imprimirreves(c, x, i);
 					break;
 				case 4: //imprime las fichas del jugador 4
 					if(y[i]>0)
 					imprimirnormal(c, y, i);
-					else if(y[i]<0)
-					imprimirreves(c, y, i);
 					break;
 			}
 		}
