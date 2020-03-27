@@ -164,6 +164,7 @@ int main()
 	}
 	turno=(turno+1)%4; // avanzamos 1 turno, de forma que le toque al siguiente jugador
 	juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, jugadores, turno, final);
+	
 	// antes de empezar con el desarrollo de la partida, voy a explicar que tenemos hasta ahora y que voy a hacer en el bucle do-while
 	//  hasta ahora tenemos:
 		// varios jugadores con 7 fichas cada uno menos 1 de ellos, el que haya colocado la ficha más alta, que tiene 6
@@ -182,19 +183,776 @@ int main()
 						   // la única diferencia entre los casos es el vector que usa para ver si puede colocar ficha o no
 			{
 				case 0: // turno del jugador 1
-					
+					if((tablero[0]>0)&&(tablero[contador]>0)) // si los números asociados a ambas fichas son positivos...
+					{
+						if((fichasjugador1[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador1[i];
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador1[i];
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador1[i]*(-1);
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador1[i]*(-1);
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+					}
+					if((tablero[0]>0)&&(tablero[contador]<0)) // en el caso de que el primero sea positivo y el segundo negativo...
+					{
+						if((fichasjugador1[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador1[i];
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador1[i];
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador1[i]*(-1);
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador1[i]*(-1);
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+					}
+					if((tablero[0]<0)&&(tablero[contador]>0)) // en el caso de que el primero sea negativo y el segundo positivo...
+					{
+						if((fichasjugador1[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador1[i];
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador1[i];
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador1[i]*(-1);
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador1[i]*(-1);
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+					}
+					if((tablero[0]<0)&&(tablero[contador]<0)) // si los números asociados a ambas fichas son negativos...
+					{
+						if((fichasjugador1[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador1[i];
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador1[i];
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador1[i]*(-1);
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+						else if((fichasjugador1[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador1[i]*(-1);
+							fichasjugador1[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=1;
+						}
+					}
 					break;
 				case 1: // turno del jugador 2
-					
+					if((tablero[0]>0)&&(tablero[contador]>0))
+					{
+						if((fichasjugador2[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador2[i];
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador2[i];
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador2[i]*(-1);
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador2[i]*(-1);
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+					}
+					if((tablero[0]>0)&&(tablero[contador]<0))
+					{
+						if((fichasjugador2[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador2[i];
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador2[i];
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador2[i]*(-1);
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador2[i]*(-1);
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+					}
+					if((tablero[0]<0)&&(tablero[contador]>0))
+					{
+						if((fichasjugador2[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador2[i];
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador2[i];
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador2[i]*(-1);
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador2[i]*(-1);
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+					}
+					if((tablero[0]<0)&&(tablero[contador]<0))
+					{
+						if((fichasjugador2[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador2[i];
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador2[i];
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador2[i]*(-1);
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+						else if((fichasjugador2[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador2[i]*(-1);
+							fichasjugador2[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=2;
+						}
+					}
 					break;
 				case 2: // turno del jugador 3
-					
+					if((tablero[0]>0)&&(tablero[contador]>0))
+					{
+						if((fichasjugador3[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador3[i];
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador3[i];
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador3[i]*(-1);
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador3[i]*(-1);
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+					}
+					if((tablero[0]>0)&&(tablero[contador]<0))
+					{
+						if((fichasjugador3[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador3[i];
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador3[i];
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador3[i]*(-1);
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador3[i]*(-1);
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+					}
+					if((tablero[0]<0)&&(tablero[contador]>0))
+					{
+						if((fichasjugador3[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador3[i];
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador3[i];
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador3[i]*(-1);
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador3[i]*(-1);
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+					}
+					if((tablero[0]<0)&&(tablero[contador]<0))
+					{
+						if((fichasjugador3[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador3[i];
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador3[i];
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador3[i]*(-1);
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+						else if((fichasjugador3[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador3[i]*(-1);
+							fichasjugador3[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=3;
+						}
+					}
 					break;
 				case 3: // turno del jugador 4
-					
+					if((tablero[0]>0)&&(tablero[contador]>0))
+					{
+						if((fichasjugador4[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador4[i];
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador4[i];
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador4[i]*(-1);
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador4[i]*(-1);
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+					}
+					if((tablero[0]>0)&&(tablero[contador]<0))
+					{
+						if((fichasjugador4[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador4[i];
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador4[i];
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador4[i]*(-1);
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador4[i]*(-1);
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+					}
+					if((tablero[0]<0)&&(tablero[contador]>0))
+					{
+						if((fichasjugador4[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador4[i];
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador4[i];
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador4[i]*(-1);
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador4[i]*(-1);
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+					}
+					if((tablero[0]<0)&&(tablero[contador]<0))
+					{
+						if((fichasjugador4[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador4[i];
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador4[i];
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
+						{
+							tablero[contador+1]=fichasjugador4[i]*(-1);
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+						else if((fichasjugador4[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
+						{
+							for(j=0; j<=contador; j++)
+							{
+								tablero[contador+1-j]=tablero[contador-j];
+							}
+							tablero[0]=fichasjugador4[i]*(-1);
+							fichasjugador4[i]=0;
+							contador+=1;
+							final=0;
+							repeticion=1;
+							ganador=4;
+						}
+					}
 					break;
 			}
 		}
+		if(repeticion==0)
+		{
+			final+=1;
+			repeticion=1;
+		}
+		final=comprueba(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, final, turno);
+		repeticion=0;
+		turno=(turno+1)%4;
+		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, jugadores, turno, final);
 	} while(final<3);
 	printf("\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!", ganador);
 	return 0;
