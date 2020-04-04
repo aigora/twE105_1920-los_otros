@@ -8,15 +8,247 @@ typedef struct
 	int numero2;
 } ficha;
 
-int fichaalta(int x[], int y[], int z[], int v[], int n); // determina cuál es la ficha más alta en juego
-int primerturno(int x[], int y[], int z[], int v[], int n, int m); // sirve para saber quien empieza a jugar
-int comprueba(int x[], int y[], int z[], int v[], int n, int m); // se ejecuta tras cada turno y sirve para comprobar si alguien se ha quedado sin fichas
+int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores);
+int primerturno(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores, int fichagrande);
+int siguienteturno(int jugadores, int turno);
+int comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int final, int turno);
+int modofacil(ficha fichas[], int jugador[], int tablero[], int pozo[], int contadortablero, int repeticion);
 
-void imprimirnormal(ficha c[], int y[], int n); // imprime una ficha tal y como está en la matriz
-void imprimirreves(ficha c[], int y[], int n); // imprime una ficha dada la vuelta, por ejemplo, la ficha [1|2] la imprime como [2|1]
-void juego(ficha c[], int v[], int w[], int x[], int y[], int z[], int n, int m, int p); // imprime todo el tablero de juego
+void imprimirnormal(ficha fichas[], int vectorfichas[], int posicion); // imprime una ficha tal y como está en la matriz
+void imprimirnormal(ficha fichas[], int vectorfichas[], int posicion); // imprime una ficha dada la vuelta, por ejemplo, la ficha [1|2] la imprime como [2|1]
+void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int jugadores, int turno, int final);
+void modomultijugador(int jugadores, int dificultad); // esta función va a contener todo el sistema de juego
+void robarficha(int jugador[], int pozo[], int contadorpozo);
 
 int main()
+{
+	int modo, jugadores, dificultad;
+	char repetir;
+	do
+	{
+		do
+		{
+			printf("\t\t*Simulador de Domino*\n\n");
+    		printf("Elige tu modo de juego\n");
+    		printf("1: Modo Solo\n");			//	Habrá un modo de juego a solas
+			printf("2: Modo Multijugador\n");   // Nuestro programa permitira juegos de hasta 4 jugadores, 1 local y el resto CPU's
+			printf("3: Salir del Programa\n");
+			scanf("%i",&modo);
+    	} while(modo<1||modo>3); // se volverá a ejecutar siempre que el modo de juego no exista
+    	
+        switch(modo)
+    	{
+    		case 1:
+      			printf("\nHas seleccionado el MODO SOLO\n");
+      			// Aqui se inicia la funcion de juego con parametro para juegar solo
+      			break;
+    		case 2:
+				printf("\nHas seleccionado MODO MULTIJUGADOR\n");
+    			do
+				{
+    				printf("\nSelecciona el numero de jugadores 2-4\n");
+					printf("0: Salir del Programa\n");
+					scanf("%i",&jugadores);
+    			} while(jugadores==1||jugadores<0||jugadores>4);
+    			if (jugadores == 0)
+				{
+					break;
+				}
+				do
+				{
+					printf("\nSelecciona la dificultad del juego\nFacil: 1\nDificil: 2\n");
+    				scanf("%s",&dificultad);
+    			} while(dificultad!='1' && dificultad!='2');
+				modomultijugador(jugadores, dificultad);
+    			break;
+    		case 3:
+      			printf("Saliendo del programa\n");
+      			break;
+    	}
+    do
+	{
+		printf("\nQuieres Jugar de nuevo?\nSi: y\nNo: n \n");
+    	scanf("%s",&repetir);
+    } while(repetir!='y' && repetir!='n');
+	} while(repetir=='y');
+	return 0;
+}
+
+int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores)
+// esta función sirve para determinar cual es la ficha más alta de entre las repartidas a todos los jugadores
+{
+	int i, j, max;
+	max=fichasjugador1[0];
+	for(j=1; j<=jugadores; j++)
+	{
+		for(i=0; i<7; i++)
+		{
+			switch(j)
+			{
+				case 1:
+					if(fichasjugador1[i]>max)
+					{
+						max=fichasjugador1[i];
+					}
+					break;
+				case 2:
+					if(fichasjugador2[i]>max)
+					{
+						max=fichasjugador2[i];
+					}
+					break;
+				case 3:
+					if(fichasjugador3[i]>max)
+					{
+						max=fichasjugador3[i];
+					}
+					break;
+				case 4:
+					if(fichasjugador4[i]>max)
+					{
+						max=fichasjugador4[i];
+					}
+					break;
+			}
+		}
+	}
+	return max;
+}
+
+int primerturno(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores, int fichagrande)
+// esta función lo que hace es determinar que jugador tiene la ficha más alta
+{
+	int i, j, turno;
+	for(j=1; j<=jugadores; j++) // repito el bucle tantas veces como jugadores haya en la partida
+	{
+		for(i=0; i<7; i++) // recorro una a una las casillas de los vectores que contienen a las fichas
+		{
+			switch(j) // dependiendo del valor de j
+			{
+				case 1:
+					if(fichasjugador1[i]==fichagrande) // si la casilla coincide con la ficha más alta, le toca a ese jugador
+						turno=0; // el turno del jugador 1 lo simbolizo con el número 0
+					break;
+				case 2:
+					if(fichasjugador2[i]==fichagrande)
+						turno=1; // el turno del jugador 2 lo simbolizo con el número 1
+					break;
+				case 3:
+					if(fichasjugador3[i]==fichagrande)
+						turno=2; // el turno del jugador 3 lo simbolizo con el número 2
+					break;
+				case 4:
+					if(fichasjugador4[i]==fichagrande)
+						turno=3; // el turno del jugador 4 lo simbolizo con el número 3
+					break;
+			}
+		}
+	}
+	return turno; // la función me devuelve qué jugador tiene la ficha más alta
+}
+
+int siguienteturno(int jugadores, int turno)
+{
+	if(jugadores==2)
+		return (turno+1)%2;	
+	if(jugadores==3)
+		return (turno+1)%3;
+	if(jugadores==4)
+		return (turno+1)%4;
+}
+
+int comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int final, int turno)
+{
+	int i, sinfichas=1;
+	for(i=0; i<28; i++)
+	{
+		switch(turno) //este bucle sirve para comprobar que todos siguen teniendo fichas
+		{
+			case 0:
+				if(fichasjugador1[i]!=0)
+				sinfichas=0;
+				break;
+			case 1:
+				if(fichasjugador2[i]!=0)
+				sinfichas=0;
+				break;
+			case 2:
+				if(fichasjugador3[i]!=0)
+				sinfichas=0;
+				break;
+			case 3:
+				if(fichasjugador4[i]!=0)
+				sinfichas=0;
+				break;
+		}
+	}
+	if(sinfichas==1)
+		final=4;
+	return final;
+}
+
+void imprimirnormal(ficha fichas[], int vectorfichas[], int posicion)
+{
+	printf("[%i|%i]", fichas[vectorfichas[posicion]].numero1, fichas[vectorfichas[posicion]].numero2);
+}
+
+void imprimirreves(ficha fichas[], int vectorfichas[], int posicion)
+{
+	printf("[%i|%i]", fichas[vectorfichas[posicion]*(-1)].numero2, fichas[vectorfichas[posicion]*(-1)].numero1);
+}
+
+void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int jugadores, int turno, int final)
+{
+	int i, j;
+	// este bucle sirve para imprimir las fichas del tablero
+	printf("\nTablero:   ");
+	for(j=0; j<28; j++)
+	{
+		if(tablero[j]>0)
+		imprimirnormal(fichas, tablero, j);
+		if(tablero[j]<0)
+		imprimirreves(fichas, tablero, j);
+	}
+	printf("\n\n");
+	// este bucle sirve para imprimr las fichas de cada jugador
+	for(j=1; j<=jugadores; j++)
+	{
+		printf("Jugador %i: ", j);
+		for(i=0; i<28;i++)
+		{
+			switch(j)
+			{
+				case 1: //imprime las fichas del jugador 1
+					if(fichasjugador1[i]>0)
+					imprimirnormal(fichas, fichasjugador1, i);
+					break;
+				case 2: //imprime las fichas del jugador 2
+					if(fichasjugador2[i]>0)
+					imprimirnormal(fichas, fichasjugador2, i);
+					break;
+				case 3: //imprime las fichas del jugador 3
+					if(fichasjugador3[i]>0)
+					imprimirnormal(fichas, fichasjugador3, i);
+					break;
+				case 4: //imprime las fichas del jugador 4
+					if(fichasjugador4[i]>0)
+					imprimirnormal(fichas, fichasjugador4, i);
+					break;
+			}
+		}
+		printf("\n");
+	}
+	printf("\nPozo:   ");
+	for(j=0; j<28; j++)
+	{
+		if(pozo[j]>0)
+		imprimirnormal(fichas, pozo, j);
+	}
+	if(final<3)
+	printf("\n\n\t\tTURNO DEL JUGADOR %i\n\n", turno+1);
+}
+
+void modomultijugador(int jugadores, int dificultad) // el parámetro n se refiere al número de jugadores y m a la dificultad
 {
 	ficha fichas[29] = // voy a asociar a cada ficha 1 número, que corresponde con la posición ocupada en el vector
 	{
@@ -53,30 +285,22 @@ int main()
 	};
 	int aleatorio, igual; // estas dos variables van a servir para el reparto inicial de fichas
 	int i, j; // estas dos variables las vamos a utilizar para los bucles
-	int jugadores; // esta variable va a servir para indicar el número de jugadores, hasta un máximo de 4
-	int valores[28]; // vector donde voy a almacenar todos los valores de "aleatorio"
-	int fichasjugador1[7]; // vector donde voy a almacenar las fichas del jugador 1
-	int fichasjugador2[7]; // vector donde voy a almacenar las fichas del jugador 2
-	int fichasjugador3[7]; // vector donde voy a almacenar las fichas del jugador 3
-	int fichasjugador4[7]; // vector donde voy a almacenar las fichas del jugador 4
-	int tablero[28]; // vector donde voy a ir almacenando las fichas ya jugadas
+	int valores[28]={0}; // vector donde voy a almacenar todos los valores de "aleatorio"
+	int fichasjugador1[28]={0}; // vector donde voy a almacenar las fichas del jugador 1
+	int fichasjugador2[28]={0}; // vector donde voy a almacenar las fichas del jugador 2
+	int fichasjugador3[28]={0}; // vector donde voy a almacenar las fichas del jugador 3
+	int fichasjugador4[28]={0}; // vector donde voy a almacenar las fichas del jugador 4
+	int tablero[28]={0}; // vector donde voy a ir almacenando las fichas ya jugadas
+	int pozo[28]={0}; // este vector contrendrá las fichas que no se hayan repartido al principio de la partida
 	int turno; // esta variable sirve para saber quien empieza a jugar
 	int fichagrande; // esta variable sirve para saber cuál es la ficha mas alta de las repartidas
-	int contador=0; // esta variable sirve para contar el número de fichas que hay en el vector "tablero"
+	int contadortablero=0; // esta variable sirve para contar el número de fichas que hay en el vector "tablero"
+	int contadorpozo; // esta variable sirve para contar el número de fichas que hay en el vector "pozo"
 	int final=0; // esta variable determinará cuando se termina la partida
 	int repeticion=0; // esta variable se usa para que cada jugador solo puede poner 1 pieza por ronda;
 	int ganador; //esta variable va a determinar quién ha ganado la partida
-	
-	// este bucle solamente sirve para llenar el vector "tablero" de ceros
-	// el 0 lo voy a utilizar para simular que no hay ficha
-	for(i=0; i<28; i++)
-	{
-		tablero[i]=0;
-	}
-	printf("Selecciona el número de jugadores (entre 2 y 4): ");
-	scanf("%i", &jugadores); // introduzco el número de jugadores deseados
-	srand(time(NULL));
 
+	srand(time(NULL));
 	// este bucle sirve para llenar el vector "valores" con valores aleatorios entre 1 y 28, sin repeticion
 	for(i=0; i<28; i++)
 	{
@@ -95,40 +319,100 @@ int main()
 	
 	// este bucle sirve para repatir las fichas entre el número indicado de jugadores usando el vector "valores"
 	// asocio 7 números consecutivos a cada jugador, es decir, los 7 primeros al jugador 1, del 8 al 15 al jugador 2 y así sucesivamente
-	for(j=1; j<=jugadores; j++) // repito el bucle tantas veces como jugadores haya, pues no quiero repartir a jugadores "inexistentes" en la partida
+	for(j=1; j<=jugadores+1; j++) // repito el bucle tantas veces como jugadores haya, pues no quiero repartir a jugadores "inexistentes" en la partida
 	{
-		for(i=0; i<7;i++)  // repito el bucle 7 veces porque al comenzar la partida cada jugador tiene 7 fichas
+		if(jugadores==2)
 		{
 			switch(j) 
+				{
+					case 1: // reparto al jugador 1
+						for(i=0; i<7; i++)
+						{
+							aleatorio=valores[i];
+							fichasjugador1[i]=aleatorio;
+						}
+						break;
+					case 2: // reparto al jugador 2
+						for(i=0; i<7; i++)
+						{
+							aleatorio=valores[i+7];
+							fichasjugador2[i]=aleatorio;
+						}
+						break;
+					case 3: // introduzco el resto de las fichas en el vector "pozo"
+						for(i=0; i<14; i++)
+						{
+							aleatorio=valores[i+14];
+							pozo[i]=aleatorio;
+						}
+						break;
+				}
+				contadorpozo=13;
+		}
+		if(jugadores==3) // si hay 3 jugadores, reparto 7 fichas a cada jugador y las 7 restantes van al pozo
+		{
+			for(i=0; i<7;i++)
 			{
-				case 1: // reparto al jugador 1
-					aleatorio=valores[i];
-					fichasjugador1[i]=aleatorio;
-					break;
-				case 2: // reparto al jugador 2
-					aleatorio=valores[i+7];
-					fichasjugador2[i]=aleatorio;
-					break;
-				case 3: // reparto al jugador 3
-					aleatorio=valores[i+14];
-					fichasjugador3[i]=aleatorio;
-					break;
-				case 4: // reparto al jugador 4
-					aleatorio=valores[i+21];
-					fichasjugador4[i]=aleatorio;
-					break;
+				switch(j) 
+				{
+					case 1: // reparto al jugador 1
+						aleatorio=valores[i];
+						fichasjugador1[i]=aleatorio;
+						break;
+					case 2: // reparto al jugador 2
+						aleatorio=valores[i+7];
+						fichasjugador2[i]=aleatorio;
+						break;
+					case 3: // reparto al jugador 3
+						aleatorio=valores[i+14];
+						fichasjugador3[i]=aleatorio;
+						break;
+					case 4: // introduzco el resto de las fichas en el vector "pozo"
+						aleatorio=valores[i+21];
+						pozo[i]=aleatorio;
+						break;
+				}
 			}
+			contadorpozo=6;
+		}
+		if(jugadores==4) // si hay 4 jugadores, reparto 7 fichas a cada jugador
+		{
+			for(i=0; i<7;i++)
+			{
+				switch(j) 
+				{
+					case 1: // reparto al jugador 1
+						aleatorio=valores[i];
+						fichasjugador1[i]=aleatorio;
+						break;
+					case 2: // reparto al jugador 2
+						aleatorio=valores[i+7];
+						fichasjugador2[i]=aleatorio;
+						break;
+					case 3: // reparto al jugador 3
+						aleatorio=valores[i+14];
+						fichasjugador3[i]=aleatorio;
+						break;
+					case 4: // reparto al jugador 4
+						aleatorio=valores[i+21];
+						fichasjugador4[i]=aleatorio;
+						break;
+					case 5: // no hay fichas en el pozo
+						break;
+				}
+			}
+			contadorpozo=-1;
 		}
 	}
-	// tras este bucle ya tengo a todos los miembros de la partida con 7 fichas cada uno. Toca ver quién empieza a jugar
+	// tras este bucle ya tengo a todos los miembros de la partida con 7 fichas cada uno y las restantes en el pozo. Toca ver quién empieza a jugar
 	// en el dominó, empieza a jugar quien tenga la ficha más alta, empezando por las fichas dobles
 	fichagrande=fichaalta(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, jugadores); // veo cual es la ficha más alta
 	turno=primerturno(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, jugadores, fichagrande); // veo quién tiene esa ficha
-	juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, jugadores, turno, final); // imprimo el tablero de juego
+	juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final); // imprimo el tablero de juego
 	
-	// este bucle sirve para ejecutar el primer turno
+	// este bucle sirve para ejecutar el primer turno, el cuál se realizará de forma automática
 	// como ya sabemos quien empieza la partida, pone la ficha más alta en el tablero y se la quita al jugador correspondiente
-	for(i=0; i<7; i++)
+	for(i=0; i<28; i++)
 	{
 		switch(turno) // dependiendo de quien empieza la partida
 		{
@@ -162,8 +446,8 @@ int main()
 				break;
 		}
 	}
-	turno=(turno+1)%4; // avanzamos 1 turno, de forma que le toque al siguiente jugador
-	juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, jugadores, turno, final);
+	turno=siguienteturno(jugadores, turno); // avanzamos 1 turno, de forma que le toque al siguiente jugador
+	juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 	
 	// antes de empezar con el desarrollo de la partida, voy a explicar que tenemos hasta ahora y que voy a hacer en el bucle do-while
 	//  hasta ahora tenemos:
@@ -175,947 +459,225 @@ int main()
 		// final: cada vez que 1 jugador no pueda poner, le sumaré 1 a su valor pero, en caso de que algún jugador ponga, volverá a valer 0
 		// repetición: cuando algún jugador ponga ficha valdrá 1, de forma que solo puede colocar cuando repeicion=1. Cada vex que avance de turno, valdrá 0
 		// ganador: sirve para determinar quien ha ganado. Cada vez que un jugador ponga, valdrá el número de ese jugador, es decir, si coloca el jugador 1, valdrá 1
-	do
+	if(dificultad=='1')
 	{
-		for(i=0; i<7; i++) // este bucle sirve para recorrer 1 a 1 las fichas de cada jugador
+		do
 		{
-			switch (turno) // dependiendo de a quien le toque, ejecutará 1 caso u otro
-						   // la única diferencia entre los casos es el vector que usa para ver si puede colocar ficha o no
+			do
 			{
-				case 0: // turno del jugador 1
-					if((tablero[0]>0)&&(tablero[contador]>0)) // si los números asociados a ambas fichas son positivos...
-					{
-						if((fichasjugador1[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
+				switch(turno)
+				{
+					case 0: // turno del jugador 1
+						repeticion=modofacil(fichas, fichasjugador1, tablero, pozo, contadortablero, repeticion);
+						if(repeticion==0&&contadorpozo!=-1)
 						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador1[i];
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
+							robarficha(fichasjugador1, pozo, contadorpozo);
+							contadorpozo-=1;
+							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+						}
+						if(repeticion==1)
+						{
 							ganador=1;
-						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador1[i];
-							fichasjugador1[i]=0;
-							contador+=1;
+							contadortablero+=1;
 							final=0;
-							repeticion=1;
-							ganador=1;
 						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
+						break;
+					case 1: // turno del jugador 2
+						repeticion=modofacil(fichas, fichasjugador2, tablero, pozo, contadortablero, repeticion);
+						if(repeticion==0&&contadorpozo!=-1)
 						{
-							tablero[contador+1]=fichasjugador1[i]*(-1);
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
+							robarficha(fichasjugador2, pozo, contadorpozo);
+							contadorpozo-=1;
+							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
+						if(repeticion==1)
 						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador1[i]*(-1);
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-					}
-					if((tablero[0]>0)&&(tablero[contador]<0)) // en el caso de que el primero sea positivo y el segundo negativo...
-					{
-						if((fichasjugador1[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador1[i];
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador1[i];
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador1[i]*(-1);
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador1[i]*(-1);
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-					}
-					if((tablero[0]<0)&&(tablero[contador]>0)) // en el caso de que el primero sea negativo y el segundo positivo...
-					{
-						if((fichasjugador1[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador1[i];
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador1[i];
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador1[i]*(-1);
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador1[i]*(-1);
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-					}
-					if((tablero[0]<0)&&(tablero[contador]<0)) // si los números asociados a ambas fichas son negativos...
-					{
-						if((fichasjugador1[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador1[i];
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador1[i];
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador1[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador1[i]*(-1);
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-						else if((fichasjugador1[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador1[i]*(-1);
-							fichasjugador1[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=1;
-						}
-					}
-					break;
-				case 1: // turno del jugador 2
-					if((tablero[0]>0)&&(tablero[contador]>0))
-					{
-						if((fichasjugador2[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador2[i];
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
 							ganador=2;
-						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador2[i];
-							fichasjugador2[i]=0;
-							contador+=1;
+							contadortablero+=1;
 							final=0;
-							repeticion=1;
-							ganador=2;
 						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
+						break;
+					case 2: // turno del jugador 3
+						repeticion=modofacil(fichas, fichasjugador3, tablero, pozo, contadortablero, repeticion);
+						if(repeticion==0&&contadorpozo!=-1)
 						{
-							tablero[contador+1]=fichasjugador2[i]*(-1);
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
+							robarficha(fichasjugador3, pozo, contadorpozo);
+							contadorpozo-=1;
+							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
+						if(repeticion==1)
 						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador2[i]*(-1);
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-					}
-					if((tablero[0]>0)&&(tablero[contador]<0))
-					{
-						if((fichasjugador2[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador2[i];
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador2[i];
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador2[i]*(-1);
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador2[i]*(-1);
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-					}
-					if((tablero[0]<0)&&(tablero[contador]>0))
-					{
-						if((fichasjugador2[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador2[i];
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador2[i];
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador2[i]*(-1);
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador2[i]*(-1);
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-					}
-					if((tablero[0]<0)&&(tablero[contador]<0))
-					{
-						if((fichasjugador2[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador2[i];
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador2[i];
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador2[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador2[i]*(-1);
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-						else if((fichasjugador2[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador2[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador2[i]*(-1);
-							fichasjugador2[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=2;
-						}
-					}
-					break;
-				case 2: // turno del jugador 3
-					if((tablero[0]>0)&&(tablero[contador]>0))
-					{
-						if((fichasjugador3[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador3[i];
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
 							ganador=3;
-						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador3[i];
-							fichasjugador3[i]=0;
-							contador+=1;
+							contadortablero+=1;
 							final=0;
-							repeticion=1;
-							ganador=3;
 						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
+						break;
+					case 3: // turno del jugador 4
+						repeticion=modofacil(fichas, fichasjugador4, tablero, pozo, contadortablero, repeticion);
+						if(repeticion==0&&contadorpozo!=-1)
 						{
-							tablero[contador+1]=fichasjugador3[i]*(-1);
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
+							robarficha(fichasjugador4, pozo, contadorpozo);
+							contadorpozo-=1;
+							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
+						if(repeticion==1)
 						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador3[i]*(-1);
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-					}
-					if((tablero[0]>0)&&(tablero[contador]<0))
-					{
-						if((fichasjugador3[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador3[i];
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador3[i];
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador3[i]*(-1);
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador3[i]*(-1);
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-					}
-					if((tablero[0]<0)&&(tablero[contador]>0))
-					{
-						if((fichasjugador3[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador3[i];
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador3[i];
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador3[i]*(-1);
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador3[i]*(-1);
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-					}
-					if((tablero[0]<0)&&(tablero[contador]<0))
-					{
-						if((fichasjugador3[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador3[i];
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador3[i];
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador3[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador3[i]*(-1);
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-						else if((fichasjugador3[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador3[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador3[i]*(-1);
-							fichasjugador3[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=3;
-						}
-					}
-					break;
-				case 3: // turno del jugador 4
-					if((tablero[0]>0)&&(tablero[contador]>0))
-					{
-						if((fichasjugador4[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador4[i];
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
 							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador4[i];
-							fichasjugador4[i]=0;
-							contador+=1;
+							contadortablero+=1;
 							final=0;
-							repeticion=1;
-							ganador=4;
 						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador4[i]*(-1);
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador4[i]*(-1);
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-					}
-					if((tablero[0]>0)&&(tablero[contador]<0))
-					{
-						if((fichasjugador4[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador4[i];
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador4[i];
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador4[i]*(-1);
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador4[i]*(-1);
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-					}
-					if((tablero[0]<0)&&(tablero[contador]>0))
-					{
-						if((fichasjugador4[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador4[i];
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador4[i];
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]].numero2==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador4[i]*(-1);
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador4[i]*(-1);
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-					}
-					if((tablero[0]<0)&&(tablero[contador]<0))
-					{
-						if((fichasjugador4[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador4[i];
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador4[i];
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[contador]*(-1)].numero1==fichas[fichasjugador4[i]].numero2)&&(repeticion==0))
-						{
-							tablero[contador+1]=fichasjugador4[i]*(-1);
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-						else if((fichasjugador4[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador4[i]].numero1)&&(repeticion==0))
-						{
-							for(j=0; j<=contador; j++)
-							{
-								tablero[contador+1-j]=tablero[contador-j];
-							}
-							tablero[0]=fichasjugador4[i]*(-1);
-							fichasjugador4[i]=0;
-							contador+=1;
-							final=0;
-							repeticion=1;
-							ganador=4;
-						}
-					}
-					break;
+						break;
+				} 
+			} while(repeticion==0&&contadorpozo!=-1);
+			if(repeticion==0)
+				final+=1;
+			final=comprueba(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, final, turno);
+			repeticion=0;
+			turno=siguienteturno(jugadores, turno);
+			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+		} while(final<3);
+	printf("\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+	}
+}
+
+int modofacil(ficha fichas[], int jugador[], int tablero[], int pozo[], int contadortablero, int repeticion)
+{
+	int i,j;
+	for(i=0; i<27; i++)
+	{
+		if((tablero[0]>0)&&(tablero[contadortablero]>0)) // si los números asociados a ambas fichas son positivos...
+		{
+			if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero2)&&(repeticion==0))
+			{
+				for(j=0; j<=contadortablero; j++)
+					tablero[contadortablero+1-j]=tablero[contadortablero-j];
+				tablero[0]=jugador[i];
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero1)&&(repeticion==0))
+			{
+				tablero[contadortablero+1]=jugador[i];
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero2)&&(repeticion==0))
+			{
+				tablero[contadortablero+1]=jugador[i]*(-1);
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero1)&&(repeticion==0))
+			{
+				for(j=0; j<=contadortablero; j++)
+					tablero[contadortablero+1-j]=tablero[contadortablero-j];
+				tablero[0]=jugador[i]*(-1);
+				jugador[i]=0;
+				repeticion=1;
 			}
 		}
-		if(repeticion==0)
+		if((tablero[0]>0)&&(tablero[contadortablero]<0)) // en el caso de que el primero sea positivo y el segundo negativo...
 		{
-			final+=1;
-			repeticion=1;
-		}
-		final=comprueba(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, final, turno);
-		repeticion=0;
-		turno=(turno+1)%4;
-		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, jugadores, turno, final);
-	} while(final<3);
-	printf("\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!", ganador);
-	return 0;
-}
-
-int fichaalta(int x[], int y[], int z[], int v[], int n)
-// x[] es el vector fichasjugador1, y[] el vector fichasjugador2, z[] el vector fichasjugador3, v[] el vector fichasjugador4 y n los jugadores
-// esta función sirve para determinar cual es la ficha más alta de entre las repartidas a todos los jugadores
-{
-	int i, j;
-	int max;
-	max=x[0];
-	for(j=1; j<=n; j++)
-	{
-		for(i=0; i<7; i++)
-		{
-			switch(j)
+			if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
-				case 1:
-					if(x[i]>max)
-					{
-						max=x[i];
-					}
-					break;
-				case 2:
-					if(y[i]>max)
-					{
-						max=y[i];
-					}
-					break;
-				case 3:
-					if(z[i]>max)
-					{
-						max=z[i];
-					}
-					break;
-				case 4:
-					if(v[i]>max)
-					{
-						max=v[i];
-					}
-					break;
+				for(j=0; j<=contadortablero; j++)
+					tablero[contadortablero+1-j]=tablero[contadortablero-j];
+				tablero[0]=jugador[i];
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero1)&&(repeticion==0))
+			{
+				tablero[contadortablero+1]=jugador[i];
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero2)&&(repeticion==0))
+			{
+				tablero[contadortablero+1]=jugador[i]*(-1);
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero1)&&(repeticion==0))
+			{
+				for(j=0; j<=contadortablero; j++)
+					tablero[contadortablero+1-j]=tablero[contadortablero-j];
+				tablero[0]=jugador[i]*(-1);
+				jugador[i]=0;
+				repeticion=1;
 			}
 		}
-	}
-	return max;
-}
-
-int primerturno(int x[], int y[], int z[], int v[], int n, int m)
-// x[] es el vector fichasjugador1, y[] el vector fichasjugador2, z[] el vector fichasjugador3, v[] el vector fichasjugador4, n los jugadores y m es fichagrande
-// esta función lo que hace es determinar que jugador tiene la ficha más alta
-{
-	int i, j, turno;
-	for(j=1; j<=n; j++) // repito el bucle tantas veces como jugadores haya en la partida
-	{
-		for(i=0; i<7; i++) // recorro una a una las casillas de los vectores que contienen a las fichas
+		if((tablero[0]<0)&&(tablero[contadortablero]>0)) // en el caso de que el primero sea negativo y el segundo positivo...
 		{
-			switch(j) // dependiendo del valor de j
+			if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
-				case 1:
-					if(x[i]==m) // si la casilla coincide con la ficha más alta, le toca a ese jugador
-						turno=0; // el turno del jugador 1 lo simbolizo con el número 0
-					break;
-				case 2:
-					if(y[i]==m)
-						turno=1; // el turno del jugador 2 lo simbolizo con el número 1
-					break;
-				case 3:
-					if(z[i]==m)
-						turno=2; // el turno del jugador 3 lo simbolizo con el número 2
-					break;
-				case 4:
-					if(v[i]==m)
-						turno=3; // el turno del jugador 4 lo simbolizo con el número 3
-					break;
+				for(j=0; j<=contadortablero; j++)
+					tablero[contadortablero+1-j]=tablero[contadortablero-j];
+				tablero[0]=jugador[i];
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero1)&&(repeticion==0))
+			{
+				tablero[contadortablero+1]=jugador[i];
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero2)&&(repeticion==0))
+			{
+				tablero[contadortablero+1]=jugador[i]*(-1);
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero1)&&(repeticion==0))
+			{
+				for(j=0; j<=contadortablero; j++)
+					tablero[contadortablero+1-j]=tablero[contadortablero-j];
+				tablero[0]=jugador[i]*(-1);
+				jugador[i]=0;
+				repeticion=1;
 			}
 		}
-	}
-	return turno; // la función me devuelve qué jugador tiene la ficha más alta
-}
-
-int comprueba(int x[], int y[], int z[], int v[], int n, int m)
-// x[] es el vector fichasjugador1, y[] el vector fichasjugador2, z[] el vector fichasjugador3, v[] el vector fichasjugador4, n final y m turno
-{
-	switch(m) //este bucle sirve para comprobar que todos siguen teniendo fichas
-	{
-		case 0:
-			if((x[0]==0)&&(x[1]==0)&&(x[2]==0)&&(x[3]==0)&&(x[4]==0)&&(x[5]==0)&&(x[6]==0)) // si alguien se queda sin fichas, la partida ha terminado
-			n=4;
-			break;
-		case 1:
-			if((y[0]==0)&&(y[1]==0)&&(y[2]==0)&&(y[3]==0)&&(y[4]==0)&&(y[5]==0)&&(y[6]==0))
-			n=4;
-			break;
-		case 2:
-			if((z[0]==0)&&(z[1]==0)&&(z[2]==0)&&(z[3]==0)&&(z[4]==0)&&(z[5]==0)&&(z[6]==0))
-			n=4;
-			break;
-		case 3:
-			if((v[0]==0)&&(v[1]==0)&&(v[2]==0)&&(v[3]==0)&&(v[4]==0)&&(v[5]==0)&&(v[6]==0))
-			n=4;
-			break;
-	}
-	return n;
-}
-
-void imprimirnormal(ficha c[], int y[], int n)
-{
-	int imprime;
-	imprime=y[n];
-	printf("[%i|%i]", c[imprime].numero1, c[imprime].numero2);
-}
-
-void imprimirreves(ficha c[], int y[], int n)
-{
-	int imprime;
-	imprime=y[n]*(-1);
-	printf("[%i|%i]", c[imprime].numero2, c[imprime].numero1);
-}
-
-void juego(ficha c[], int v[], int w[], int x[], int y[], int z[], int n, int m, int p)
-{
-	// c[] es el vector de la estructura que contiene las fichas, v[] el vector fichasjugador1, w[] el vector fichasjugador2
-	// x[] el vector fichasjugador3, y[] el vector fichasjugador4, z[] es el vector tablero, n es el número de jugadores y m es el turno
-	int i, j;
-	// este bucle sirve para imprimir las fichas del tablero
-	printf("\nTablero:   ");
-	for(j=0; j<28; j++)
-	{
-		if(z[j]>0)
-		imprimirnormal(c, z, j);
-		if(z[j]<0)
-		imprimirreves(c, z, j);
-	}
-	printf("\n\n");
-	// este bucle sirve para imprimr las fichas de cada jugador
-	for(j=1; j<=n; j++)
-	{
-		printf("Jugador %i: ", j);
-		for(i=0; i<7;i++)
+		if((tablero[0]<0)&&(tablero[contadortablero]<0)) // si los números asociados a ambas fichas son negativos...
 		{
-			switch(j)
+			if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
-				case 1: //imprime las fichas del jugador 1
-					if(v[i]>0) // si el número es positivo
-					imprimirnormal(c, v, i);
-					break;
-				case 2: //imprime las fichas del jugador 2
-					if(w[i]>0)
-					imprimirnormal(c, w, i);
-					break;
-				case 3: //imprime las fichas del jugador 3
-					if(x[i]>0)
-					imprimirnormal(c, x, i);
-					break;
-				case 4: //imprime las fichas del jugador 4
-					if(y[i]>0)
-					imprimirnormal(c, y, i);
-					break;
+				for(j=0; j<=contadortablero; j++)
+					tablero[contadortablero+1-j]=tablero[contadortablero-j];
+				tablero[0]=jugador[i];
+				jugador[i]=0;
+				repeticion=1;
 			}
-		}
-		printf("\n");
-	}
-	if(p<3)
-	printf("\n\t\tTURNO DEL JUGADOR %i\n\n", m+1);
+			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero1)&&(repeticion==0))
+			{
+				tablero[contadortablero+1]=jugador[i];
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero2)&&(repeticion==0))
+			{
+				tablero[contadortablero+1]=jugador[i]*(-1);
+				jugador[i]=0;
+				repeticion=1;
+			}
+			else if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero1)&&(repeticion==0))
+			{
+				for(j=0; j<=contadortablero; j++)
+					tablero[contadortablero+1-j]=tablero[contadortablero-j];
+				tablero[0]=jugador[i]*(-1);
+				jugador[i]=0;
+				repeticion=1;
+			}
+		}	
+	}	
+	return repeticion;
+}
+
+void robarficha(int jugador[], int pozo[], int contadorpozo)
+{
+	int i;
+	for(i=0; i<27; i++)
+		jugador[27-i]=jugador[26-i];
+	jugador[0]=pozo[contadorpozo];
+	pozo[contadorpozo]=0;
 }
