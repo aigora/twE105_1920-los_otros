@@ -12,13 +12,18 @@ int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], 
 int primerturno(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores, int fichagrande);
 int siguienteturno(int jugadores, int turno);
 int comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int final, int turno);
-int modofacil(ficha fichas[], int jugador[], int tablero[], int pozo[], int contadortablero, int repeticion);
+int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero, int repeticion);
+int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int contadorpozo, int repeticion);
+int analizaderecha(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int posibilidad, int i);
+int analizaizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int posibilidad, int i);
 
 void imprimirnormal(ficha fichas[], int vectorfichas[], int posicion); // imprime una ficha tal y como está en la matriz
-void imprimirnormal(ficha fichas[], int vectorfichas[], int posicion); // imprime una ficha dada la vuelta, por ejemplo, la ficha [1|2] la imprime como [2|1]
+void imprimirreves(ficha fichas[], int vectorfichas[], int posicion); // imprime una ficha dada la vuelta, por ejemplo, la ficha [1|2] la imprime como [2|1]
 void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int jugadores, int turno, int final);
 void modomultijugador(int jugadores, int dificultad); // esta función va a contener todo el sistema de juego
 void robarficha(int jugador[], int pozo[], int contadorpozo);
+void colocarderecha(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha, int repeticion);
+void colocarizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha, int repeticion);
 
 int main()
 {
@@ -35,7 +40,6 @@ int main()
 			printf("3: Salir del Programa\n");
 			scanf("%i",&modo);
     	} while(modo<1||modo>3); // se volverá a ejecutar siempre que el modo de juego no exista
-    	
         switch(modo)
     	{
     		case 1:
@@ -51,9 +55,7 @@ int main()
 					scanf("%i",&jugadores);
     			} while(jugadores==1||jugadores<0||jugadores>4);
     			if (jugadores == 0)
-				{
 					break;
-				}
 				do
 				{
 					printf("\nSelecciona la dificultad del juego\nFacil: 1\nDificil: 2\n");
@@ -69,16 +71,15 @@ int main()
 	{
 		printf("\nQuieres Jugar de nuevo?\nSi: y\nNo: n \n");
     	scanf("%s",&repetir);
-    } while(repetir!='y' && repetir!='n');
-	} while(repetir=='y');
+    } while(repetir!='y' && repetir!='n'&& repetir!='Y'&& repetir!='N');
+	} while(repetir=='y'||repetir=='Y');
 	return 0;
 }
 
 int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores)
 // esta función sirve para determinar cual es la ficha más alta de entre las repartidas a todos los jugadores
 {
-	int i, j, max;
-	max=fichasjugador1[0];
+	int i, j, max=fichasjugador1[0];
 	for(j=1; j<=jugadores; j++)
 	{
 		for(i=0; i<7; i++)
@@ -87,27 +88,19 @@ int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], 
 			{
 				case 1:
 					if(fichasjugador1[i]>max)
-					{
 						max=fichasjugador1[i];
-					}
 					break;
 				case 2:
 					if(fichasjugador2[i]>max)
-					{
 						max=fichasjugador2[i];
-					}
 					break;
 				case 3:
 					if(fichasjugador3[i]>max)
-					{
 						max=fichasjugador3[i];
-					}
 					break;
 				case 4:
 					if(fichasjugador4[i]>max)
-					{
 						max=fichasjugador4[i];
-					}
 					break;
 			}
 		}
@@ -205,9 +198,9 @@ void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int ficha
 	for(j=0; j<28; j++)
 	{
 		if(tablero[j]>0)
-		imprimirnormal(fichas, tablero, j);
+			imprimirnormal(fichas, tablero, j);
 		if(tablero[j]<0)
-		imprimirreves(fichas, tablero, j);
+			imprimirreves(fichas, tablero, j);
 	}
 	printf("\n\n");
 	// este bucle sirve para imprimr las fichas de cada jugador
@@ -220,19 +213,19 @@ void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int ficha
 			{
 				case 1: //imprime las fichas del jugador 1
 					if(fichasjugador1[i]>0)
-					imprimirnormal(fichas, fichasjugador1, i);
+						imprimirnormal(fichas, fichasjugador1, i);
 					break;
 				case 2: //imprime las fichas del jugador 2
 					if(fichasjugador2[i]>0)
-					imprimirnormal(fichas, fichasjugador2, i);
+						imprimirnormal(fichas, fichasjugador2, i);
 					break;
 				case 3: //imprime las fichas del jugador 3
 					if(fichasjugador3[i]>0)
-					imprimirnormal(fichas, fichasjugador3, i);
+						imprimirnormal(fichas, fichasjugador3, i);
 					break;
 				case 4: //imprime las fichas del jugador 4
 					if(fichasjugador4[i]>0)
-					imprimirnormal(fichas, fichasjugador4, i);
+						imprimirnormal(fichas, fichasjugador4, i);
 					break;
 			}
 		}
@@ -242,10 +235,10 @@ void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int ficha
 	for(j=0; j<28; j++)
 	{
 		if(pozo[j]>0)
-		imprimirnormal(fichas, pozo, j);
+			imprimirnormal(fichas, pozo, j);
 	}
 	if(final<3)
-	printf("\n\n\t\tTURNO DEL JUGADOR %i\n\n", turno+1);
+		printf("\n\n\t\tTURNO DEL JUGADOR %i\n\n", turno+1);
 }
 
 void modomultijugador(int jugadores, int dificultad) // el parámetro n se refiere al número de jugadores y m a la dificultad
@@ -301,20 +294,19 @@ void modomultijugador(int jugadores, int dificultad) // el parámetro n se refier
 	int ganador; //esta variable va a determinar quién ha ganado la partida
 
 	srand(time(NULL));
-	// este bucle sirve para llenar el vector "valores" con valores aleatorios entre 1 y 28, sin repeticion
 	for(i=0; i<28; i++)
 	{
-		do // uso un do-while porque necesito que, al menos, se genere 1 número aleatorio
+		do
 		{
-			igual=0; // al principio del bucle, igual vale 0. En caso de que el valor generado no coincida con ninguno de los anteriores, el bucle no se repite
-			aleatorio=1+(rand()%28); // genero un valor aleatorio
+			igual=0; 
+			aleatorio=1+(rand()%28); 
 			for(j=0; j<i; j++)
 			{
-				if(aleatorio==valores[j]) // si el valor generado coincide con alguno de los anteriores, igual valdrá 1
-				igual=1;
+				if(aleatorio==valores[j])
+					igual=1;
 			}
-		}while(igual==1); // se ejecutará siempre que igual valga 1
-		valores[i]=aleatorio; // asocio el número generado a una posición del vector "valores"
+		}while(igual==1);
+		valores[i]=aleatorio;
 	}
 	
 	// este bucle sirve para repatir las fichas entre el número indicado de jugadores usando el vector "valores"
@@ -446,6 +438,17 @@ void modomultijugador(int jugadores, int dificultad) // el parámetro n se refier
 				break;
 		}
 	}
+	if(turno==0)
+	{
+		for(i=0; i<7; i++)
+		{
+			if(fichasjugador1[i]==0)
+			{
+				for(j=0; j<27-i;j++)
+					fichasjugador1[i+j]=fichasjugador1[i+1+j];
+			}
+		}
+	}
 	turno=siguienteturno(jugadores, turno); // avanzamos 1 turno, de forma que le toque al siguiente jugador
 	juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 	
@@ -468,7 +471,7 @@ void modomultijugador(int jugadores, int dificultad) // el parámetro n se refier
 				switch(turno)
 				{
 					case 0: // turno del jugador 1
-						repeticion=modofacil(fichas, fichasjugador1, tablero, pozo, contadortablero, repeticion);
+						repeticion=jugadorlocal(fichas, fichasjugador1, tablero, contadortablero, contadorpozo, repeticion);
 						if(repeticion==0&&contadorpozo!=-1)
 						{
 							robarficha(fichasjugador1, pozo, contadorpozo);
@@ -483,7 +486,7 @@ void modomultijugador(int jugadores, int dificultad) // el parámetro n se refier
 						}
 						break;
 					case 1: // turno del jugador 2
-						repeticion=modofacil(fichas, fichasjugador2, tablero, pozo, contadortablero, repeticion);
+						repeticion=modofacil(fichas, fichasjugador2, tablero, contadortablero, repeticion);
 						if(repeticion==0&&contadorpozo!=-1)
 						{
 							robarficha(fichasjugador2, pozo, contadorpozo);
@@ -498,7 +501,7 @@ void modomultijugador(int jugadores, int dificultad) // el parámetro n se refier
 						}
 						break;
 					case 2: // turno del jugador 3
-						repeticion=modofacil(fichas, fichasjugador3, tablero, pozo, contadortablero, repeticion);
+						repeticion=modofacil(fichas, fichasjugador3, tablero, contadortablero, repeticion);
 						if(repeticion==0&&contadorpozo!=-1)
 						{
 							robarficha(fichasjugador3, pozo, contadorpozo);
@@ -513,7 +516,7 @@ void modomultijugador(int jugadores, int dificultad) // el parámetro n se refier
 						}
 						break;
 					case 3: // turno del jugador 4
-						repeticion=modofacil(fichas, fichasjugador4, tablero, pozo, contadortablero, repeticion);
+						repeticion=modofacil(fichas, fichasjugador4, tablero, contadortablero, repeticion);
 						if(repeticion==0&&contadorpozo!=-1)
 						{
 							robarficha(fichasjugador4, pozo, contadorpozo);
@@ -536,11 +539,103 @@ void modomultijugador(int jugadores, int dificultad) // el parámetro n se refier
 			turno=siguienteturno(jugadores, turno);
 			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 		} while(final<3);
-	printf("\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	}
 }
 
-int modofacil(ficha fichas[], int jugador[], int tablero[], int pozo[], int contadortablero, int repeticion)
+int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int contadorpozo, int repeticion)
+{
+	int i, eleccion, posibilidad=0, eleccionficha, eleccionlado;
+	for(i=0; i<27; i++) // este bucle sirve para comprobar si puede poner alguna ficha
+	{
+		posibilidad=analizaderecha(fichas, fichasjugador1, tablero, contadortablero, posibilidad, i);
+		posibilidad=analizaizquierda(fichas, fichasjugador1, tablero, posibilidad, i);
+	}
+	if(contadorpozo!=-1) // en el caso de que siga habiendo fichas en el pozo...
+	{
+		do
+		{
+    		printf("Opciones para este turno:\n");
+    		printf("1: Poner ficha\n");
+			printf("2: Robar ficha\n");
+			scanf("%i",&eleccion);
+			if(posibilidad==0&&eleccion==1)
+			{
+    			do
+    			{
+    				printf("No puede poner ficha. Hay que robar\n");
+    				scanf("%i",&eleccion);
+				}while(eleccion!=2);
+			}
+    	} while(eleccion<1||eleccion>2);
+	}
+	if(contadorpozo==-1) // si no hay fichas en el pozo
+	{
+		do
+		{
+    		printf("Opciones para este turno:\n");
+    		printf("1: Poner ficha\n");
+			printf("2: No puedo colocar\n");
+			scanf("%i",&eleccion);
+			if(posibilidad==0&&eleccion==1)
+			{
+    			do
+    			{
+    				printf("No puede poner ficha. Hay que pasar.\n");
+    				scanf("%i",&eleccion);
+				}while(eleccion!=2);
+			}
+    	} while(eleccion<1||eleccion>2);
+	}
+	posibilidad=0;
+	switch(eleccion)
+	{
+		case 1: // en el caso de que se haya escojido poner ficha y se pueda poner
+			printf("Escoja que ficha quiere poner (empieza por la ficha 1):\n");
+			scanf("%i",&eleccionficha);
+			posibilidad=analizaderecha(fichas, fichasjugador1, tablero, contadortablero, posibilidad, eleccionficha-1);
+			posibilidad=analizaizquierda(fichas, fichasjugador1, tablero, posibilidad, eleccionficha-1);
+			if(posibilidad==0) // si esa ficha no se puede poner te obliga a escoger otra
+			{
+				while(posibilidad==0)
+				{
+					printf("Esa ficha no se puede poner, escoja otra.\n");
+					scanf("%i",&eleccionficha);
+					posibilidad=analizaderecha(fichas, fichasjugador1, tablero, contadortablero, posibilidad, eleccionficha-1);
+					posibilidad=analizaizquierda(fichas, fichasjugador1, tablero, posibilidad, eleccionficha-1);
+				}
+			}
+			posibilidad=0;
+			printf("¿Por qué lado la quiere colocar?\n");
+			printf("1: Derecha\n");
+			printf("2: Izquierda\n");
+			scanf("%i",&eleccionlado);
+			do
+			{
+				if(eleccionlado==1)
+					posibilidad=analizaderecha(fichas, fichasjugador1, tablero, contadortablero, posibilidad, eleccionficha-1);
+				if(eleccionlado==2)
+					posibilidad=analizaizquierda(fichas, fichasjugador1, tablero, posibilidad, eleccionficha-1);
+				if(posibilidad==0) // si no se puede colocar por el lado escogido
+				{
+					printf("No se puede colocar por ese lado Escoja el otro.\n");
+					scanf("%i",&eleccionlado);
+				}
+			}while(posibilidad==0);
+			// una vez ya sabemos la ficha que queremos colocar y porque lado hacerlo...
+			if(eleccionlado==1)
+				colocarderecha(fichas, fichasjugador1, tablero, contadortablero, eleccionficha-1, repeticion);
+			if(eleccionlado==2)
+				colocarizquierda(fichas, fichasjugador1, tablero, contadortablero, eleccionficha-1, repeticion);
+			return 1;
+			break;
+		case 2:
+			return 0;
+			break;
+	}
+}
+
+int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero, int repeticion)
 {
 	int i,j;
 	for(i=0; i<27; i++)
@@ -680,4 +775,120 @@ void robarficha(int jugador[], int pozo[], int contadorpozo)
 		jugador[27-i]=jugador[26-i];
 	jugador[0]=pozo[contadorpozo];
 	pozo[contadorpozo]=0;
+}
+
+int analizaderecha(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int posibilidad, int i)
+{
+	if(tablero[contadortablero]>0)
+	{
+		if((fichasjugador1[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador1[i]].numero1))
+			posibilidad=1;
+		if((fichasjugador1[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador1[i]].numero2))
+			posibilidad=1;
+	}
+	if(tablero[contadortablero]<0)
+	{
+		if((fichasjugador1[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador1[i]].numero1))
+			posibilidad=1;
+		if((fichasjugador1[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador1[i]].numero2))
+			posibilidad=1;
+	}
+	return posibilidad;
+}
+
+int analizaizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int posibilidad, int i)
+{
+	if(tablero[0]>0)
+	{
+		if((fichasjugador1[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[i]].numero1))
+			posibilidad=1;
+		if((fichasjugador1[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[i]].numero2))
+			posibilidad=1;
+	}
+	if(tablero[0]<0)
+	{
+		if((fichasjugador1[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[i]].numero1))
+			posibilidad=1;
+		if((fichasjugador1[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[i]].numero2))
+			posibilidad=1;
+	}
+	return posibilidad;
+}
+
+void colocarderecha(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha, int repeticion)
+{
+	int j;
+	if(tablero[contadortablero]>0)
+	{
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador1[eleccionficha]].numero1)&&(repeticion==0))
+		{
+			tablero[contadortablero+1]=fichasjugador1[eleccionficha];
+			fichasjugador1[eleccionficha]=0;
+			repeticion=1;
+		}
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador1[eleccionficha]].numero2)&&(repeticion==0))
+		{
+			tablero[contadortablero+1]=fichasjugador1[eleccionficha]*(-1);
+			fichasjugador1[eleccionficha]=0;
+			repeticion=1;
+		}
+	}
+	if(tablero[contadortablero]<0)
+	{
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador1[eleccionficha]].numero1)&&(repeticion==0))
+		{
+			tablero[contadortablero+1]=fichasjugador1[eleccionficha];
+			fichasjugador1[eleccionficha]=0;
+			repeticion=1;
+		}
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador1[eleccionficha]].numero2)&&(repeticion==0))
+		{
+			tablero[contadortablero+1]=fichasjugador1[eleccionficha]*(-1);
+			fichasjugador1[eleccionficha]=0;
+			repeticion=1;
+		}
+	}
+	for(j=0; j<27-eleccionficha;j++)
+		fichasjugador1[eleccionficha+j]=fichasjugador1[eleccionficha+1+j];
+}
+
+void colocarizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha, int repeticion)
+{
+	int j;
+	if(tablero[0]>0)
+	{
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[eleccionficha]].numero2))
+		{
+			for(j=0; j<=contadortablero; j++)
+				tablero[contadortablero+1-j]=tablero[contadortablero-j];
+			tablero[0]=fichasjugador1[eleccionficha];
+			fichasjugador1[eleccionficha]=0;
+		}
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[eleccionficha]].numero1))
+		{
+			for(j=0; j<=contadortablero; j++)
+				tablero[contadortablero+1-j]=tablero[contadortablero-j];
+			tablero[0]=fichasjugador1[eleccionficha]*(-1);
+			fichasjugador1[eleccionficha]=0;
+		}
+	}
+	if(tablero[0]<0)
+	{
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[eleccionficha]].numero2))
+		{
+			for(j=0; j<=contadortablero; j++)
+				tablero[contadortablero+1-j]=tablero[contadortablero-j];
+			tablero[0]=fichasjugador1[eleccionficha];
+			fichasjugador1[eleccionficha]=0;
+		}
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[eleccionficha]].numero1))
+		{
+			for(j=0; j<=contadortablero; j++)
+				tablero[contadortablero+1-j]=tablero[contadortablero-j];
+			tablero[0]=fichasjugador1[eleccionficha]*(-1);
+			fichasjugador1[eleccionficha]=0;
+		}
+	}
+	for(j=0; j<27-eleccionficha;j++)
+		fichasjugador1[eleccionficha+j]=fichasjugador1[eleccionficha+1+j];
 }
