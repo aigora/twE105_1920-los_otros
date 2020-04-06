@@ -22,8 +22,8 @@ void imprimirreves(ficha fichas[], int vectorfichas[], int posicion); // imprime
 void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int jugadores, int turno, int final);
 void modomultijugador(int jugadores, int dificultad); // esta función va a contener todo el sistema de juego
 void robarficha(int jugador[], int pozo[], int contadorpozo);
-void colocarderecha(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha, int repeticion);
-void colocarizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha, int repeticion);
+void colocarderecha(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha);
+void colocarizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha);
 
 int main()
 {
@@ -624,9 +624,9 @@ int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contad
 			}while(posibilidad==0);
 			// una vez ya sabemos la ficha que queremos colocar y porque lado hacerlo...
 			if(eleccionlado==1)
-				colocarderecha(fichas, fichasjugador1, tablero, contadortablero, eleccionficha-1, repeticion);
+				colocarderecha(fichas, fichasjugador1, tablero, contadortablero, eleccionficha-1);
 			if(eleccionlado==2)
-				colocarizquierda(fichas, fichasjugador1, tablero, contadortablero, eleccionficha-1, repeticion);
+				colocarizquierda(fichas, fichasjugador1, tablero, contadortablero, eleccionficha-1);
 			return 1;
 			break;
 		case 2:
@@ -815,44 +815,40 @@ int analizaizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int po
 	return posibilidad;
 }
 
-void colocarderecha(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha, int repeticion)
+void colocarderecha(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha)
 {
 	int j;
 	if(tablero[contadortablero]>0)
 	{
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador1[eleccionficha]].numero1)&&(repeticion==0))
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador1[eleccionficha]].numero1))
 		{
 			tablero[contadortablero+1]=fichasjugador1[eleccionficha];
 			fichasjugador1[eleccionficha]=0;
-			repeticion=1;
 		}
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador1[eleccionficha]].numero2)&&(repeticion==0))
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador1[eleccionficha]].numero2))
 		{
 			tablero[contadortablero+1]=fichasjugador1[eleccionficha]*(-1);
 			fichasjugador1[eleccionficha]=0;
-			repeticion=1;
 		}
 	}
 	if(tablero[contadortablero]<0)
 	{
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador1[eleccionficha]].numero1)&&(repeticion==0))
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador1[eleccionficha]].numero1))
 		{
 			tablero[contadortablero+1]=fichasjugador1[eleccionficha];
 			fichasjugador1[eleccionficha]=0;
-			repeticion=1;
 		}
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador1[eleccionficha]].numero2)&&(repeticion==0))
+		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador1[eleccionficha]].numero2))
 		{
 			tablero[contadortablero+1]=fichasjugador1[eleccionficha]*(-1);
 			fichasjugador1[eleccionficha]=0;
-			repeticion=1;
 		}
 	}
 	for(j=0; j<27-eleccionficha;j++)
 		fichasjugador1[eleccionficha+j]=fichasjugador1[eleccionficha+1+j];
 }
 
-void colocarizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha, int repeticion)
+void colocarizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha)
 {
 	int j;
 	if(tablero[0]>0)
