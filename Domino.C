@@ -159,19 +159,19 @@ int comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], 
 		{
 			case 0:
 				if(fichasjugador1[i]!=0)
-				sinfichas=0;
+					sinfichas=0;
 				break;
 			case 1:
 				if(fichasjugador2[i]!=0)
-				sinfichas=0;
+					sinfichas=0;
 				break;
 			case 2:
 				if(fichasjugador3[i]!=0)
-				sinfichas=0;
+					sinfichas=0;
 				break;
 			case 3:
 				if(fichasjugador4[i]!=0)
-				sinfichas=0;
+					sinfichas=0;
 				break;
 		}
 	}
