@@ -8,12 +8,6 @@ typedef struct
 	int numero2;
 } ficha;
 
-typedef struct
-{
-	int numero;
-	int repeticiones;
-} dificil;
-
 void modomultijugador(int jugadores, int dificultad); // esta funcion va a contener todo el sistema de juego
 	int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores);
 	int primerturno(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores, int fichagrande);
@@ -39,43 +33,43 @@ int main()
 		do
 		{
 			printf("\t\t*Simulador de Domino*\n\n");
-    		printf("Elige tu modo de juego\n");
-    		printf("1: Modo Solo\n");			//	Habra un modo de juego a solas
+    			printf("Elige tu modo de juego\n");
+    			printf("1: Modo Solo\n");			// Habra un modo de juego a solas
 			printf("2: Modo Multijugador\n");   // Nuestro programa permitira juegos de hasta 4 jugadores, 1 local y el resto CPU's
 			printf("3: Salir del Programa\n");
 			scanf("%i",&modo);
-    	} while(modo<1||modo>3); // se volvera a ejecutar siempre que el modo de juego no exista
-        switch(modo)
-    	{
-    		case 1:
-      			printf("\nHas seleccionado el MODO SOLO\n");
-      			// Aqui se inicia la funcion de juego con parametro para jugar solo
-      			break;
-    		case 2:
+    		} while(modo<1||modo>3); // se volvera a ejecutar siempre que el modo de juego no exista
+        	switch(modo)
+    		{
+    			case 1:
+  	    			printf("\nHas seleccionado el MODO SOLO\n");
+      				// Aqui se inicia la funcion de juego con parametro para jugar solo
+      				break;
+    			case 2:
 				printf("\nHas seleccionado MODO MULTIJUGADOR\n");
-    			do
+    				do
 				{
-    				printf("\nSelecciona el numero de jugadores 2-4\n");
+    					printf("\nSelecciona el numero de jugadores 2-4\n");
 					printf("0: Salir del Programa\n");
 					scanf("%i",&jugadores);
-    			} while(jugadores==1||jugadores<0||jugadores>4);
-    			if (jugadores == 0)
+    				} while(jugadores==1||jugadores<0||jugadores>4);
+    				if (jugadores == 0)
 					break;
 				do
 				{
 					printf("\nSelecciona la dificultad del juego\nFacil: 1\nDificil: 2\n");
-    				scanf("%s",&dificultad);
-    			} while(dificultad!='1' && dificultad!='2');
+    					scanf("%s",&dificultad);
+    				} while(dificultad!='1' && dificultad!='2');
 				modomultijugador(jugadores, dificultad);
-    			break;
-    		case 3:
-      			printf("Saliendo del programa\n");
-      			break;
-    	}
+    				break;
+    			case 3:
+      				printf("Saliendo del programa\n");
+      				break;
+    		}
    		do
 		{
 			printf("\nQuieres Jugar de nuevo?\nSi: y\nNo: n \n");
-    		scanf("%s",&repetir);
+    			scanf("%s",&repetir);
    		} while(repetir!='y' && repetir!='n'&& repetir!='Y'&& repetir!='N');
 	} while(repetir=='y'||repetir=='Y');
 	return 0;
@@ -369,7 +363,7 @@ void modomultijugador(int jugadores, int dificultad) // el parametro n se refier
 			turno=siguienteturno(jugadores, turno);
 			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 		} while(final<3);
-	printf("\n\n\t   ���EL JUGADOR %i HA GANADO!!!\n", ganador);
+	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	}
 }
 
@@ -520,37 +514,37 @@ int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contad
 	{
 		do
 		{
-    		printf("Opciones para este turno:\n");
-    		printf("1: Poner ficha\n");
+    			printf("Opciones para este turno:\n");
+    			printf("1: Poner ficha\n");
 			printf("2: Robar ficha\n");
 			scanf("%i",&eleccion);
 			if(posibilidad==0&&eleccion==1)
 			{
-    			do
-    			{
-    				printf("No puede poner ficha. Hay que robar\n");
-    				scanf("%i",&eleccion);
+    				do
+ 	   			{
+   	 				printf("No puede poner ficha. Hay que robar\n");
+   	 				scanf("%i",&eleccion);
 				}while(eleccion!=2);
 			}
-    	} while(eleccion<1||eleccion>2);
+    		} while(eleccion<1||eleccion>2);
 	}
 	if(contadorpozo==-1) // si no hay fichas en el pozo
 	{
 		do
 		{
-    		printf("Opciones para este turno:\n");
-    		printf("1: Poner ficha\n");
+    			printf("Opciones para este turno:\n");
+    			printf("1: Poner ficha\n");
 			printf("2: No puedo colocar\n");
 			scanf("%i",&eleccion);
 			if(posibilidad==0&&eleccion==1)
 			{
-    			do
-    			{
-    				printf("No puede poner ficha. Hay que pasar.\n");
-    				scanf("%i",&eleccion);
+    				do
+    				{
+    					printf("No puede poner ficha. Hay que pasar.\n");
+    					scanf("%i",&eleccion);
 				} while(eleccion!=2);
 			}
-    	} while(eleccion<1||eleccion>2);
+    		} while(eleccion<1||eleccion>2);
 	}
 	posibilidad=0;
 	switch(eleccion)
@@ -571,7 +565,7 @@ int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contad
 				}
 			}
 			posibilidad=0;
-			printf("�Por que lado la quiere colocar?\n");
+			printf("Por que lado la quiere colocar?\n");
 			printf("1: Derecha\n");
 			printf("2: Izquierda\n");
 			scanf("%i",&eleccionlado);
@@ -725,7 +719,7 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 	int i,j;
 	for(i=0; i<27; i++)
 	{
-		if((tablero[0]>0)&&(tablero[contadortablero]>0)) // si los números asociados a ambas fichas son positivos...
+		if((tablero[0]>0)&&(tablero[contadortablero]>0)) // si los nÃºmeros asociados a ambas fichas son positivos...
 		{
 			if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
@@ -818,7 +812,7 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 				repeticion=1;
 			}
 		}
-		if((tablero[0]<0)&&(tablero[contadortablero]<0)) // si los números asociados a ambas fichas son negativos...
+		if((tablero[0]<0)&&(tablero[contadortablero]<0)) // si los nÃºmeros asociados a ambas fichas son negativos...
 		{
 			if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
