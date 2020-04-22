@@ -291,7 +291,7 @@ void modomultijugador(int jugadores, int dificultad) // el parametro n se refier
 			turno=siguienteturno(jugadores, turno);
 			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 		} while(final<3);
-	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+	printf("\n\n\t   Â¡Â¡Â¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	}
 	
 	if(dificultad=='2') // se ejecuta el modo de juego dificil
@@ -371,7 +371,7 @@ void modomultijugador(int jugadores, int dificultad) // el parametro n se refier
 			turno=siguienteturno(jugadores, turno);
 			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 		} while(final<3);
-	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+	printf("\n\n\t   Â¡Â¡Â¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	}
 }
 
@@ -524,37 +524,37 @@ int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contad
 	{
 		do
 		{
-    		printf("Opciones para este turno:\n");
-    		printf("1: Poner ficha\n");
+    			printf("Opciones para este turno:\n");
+    			printf("1: Poner ficha\n");
 			printf("2: Robar ficha\n");
 			scanf("%i",&eleccion);
 			if(posibilidad==0&&eleccion==1)
 			{
-    			do
-    			{
-    				printf("No puede poner ficha. Hay que robar\n");
-    				scanf("%i",&eleccion);
+    				do
+    				{
+    					printf("No puede poner ficha. Hay que robar\n");
+    					scanf("%i",&eleccion);
 				}while(eleccion!=2);
 			}
-    	} while(eleccion<1||eleccion>2);
+    		} while(eleccion<1||eleccion>2);
 	}
 	if(contadorpozo==-1) // si no hay fichas en el pozo
 	{
 		do
 		{
-    		printf("Opciones para este turno:\n");
-    		printf("1: Poner ficha\n");
+    			printf("Opciones para este turno:\n");
+    			printf("1: Poner ficha\n");
 			printf("2: No puedo colocar\n");
 			scanf("%i",&eleccion);
 			if(posibilidad==0&&eleccion==1)
 			{
-    			do
-    			{
-    				printf("No puede poner ficha. Hay que pasar.\n");
-    				scanf("%i",&eleccion);
+    				do
+    				{
+    					printf("No puede poner ficha. Hay que pasar.\n");
+    					scanf("%i",&eleccion);
 				} while(eleccion!=2);
 			}
-    	} while(eleccion<1||eleccion>2);
+    		} while(eleccion<1||eleccion>2);
 	}
 	posibilidad=0;
 	switch(eleccion)
@@ -575,7 +575,7 @@ int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contad
 				}
 			}
 			posibilidad=0;
-			printf("¿Por que lado la quiere colocar?\n");
+			printf("Â¿Por que lado la quiere colocar?\n");
 			printf("1: Derecha\n");
 			printf("2: Izquierda\n");
 			scanf("%i",&eleccionlado);
