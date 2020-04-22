@@ -1,79 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-
-typedef struct
-{
-	int numero1;
-	int numero2;
-} ficha;
-
-void modomultijugador(int jugadores, int dificultad); // esta funcion va a contener todo el sistema de juego
-	int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores);
-	int primerturno(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores, int fichagrande);
-	void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int jugadores, int turno, int final);
-		void imprimirnormal(ficha fichas[], int vectorfichas[], int posicion); 
-		void imprimirreves(ficha fichas[], int vectorfichas[], int posicion);
-	int siguienteturno(int jugadores, int turno);
-	int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int contadorpozo, int repeticion);
-		int analizaderecha(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int posibilidad, int i);
-		int analizaizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int posibilidad, int i);
-		void colocarderecha(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha);
-		void colocarizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int contadortablero, int eleccionficha);
-	void robarficha(int jugador[], int pozo[], int contadorpozo);
-	int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero, int repeticion);
-	int comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int final, int turno);
-
-int main()
-{
-	int modo, jugadores, dificultad;
-	char repetir;
-	do
-	{
-		do
-		{
-			printf("\t\t*Simulador de Domino*\n\n");
-    			printf("Elige tu modo de juego\n");
-    			printf("1: Modo Solo\n");			// Habra un modo de juego a solas
-			printf("2: Modo Multijugador\n");   // Nuestro programa permitira juegos de hasta 4 jugadores, 1 local y el resto CPU's
-			printf("3: Salir del Programa\n");
-			scanf("%i",&modo);
-    		} while(modo<1||modo>3); // se volvera a ejecutar siempre que el modo de juego no exista
-        	switch(modo)
-    		{
-    			case 1:
-  	    			printf("\nHas seleccionado el MODO SOLO\n");
-      				// Aqui se inicia la funcion de juego con parametro para jugar solo
-      				break;
-    			case 2:
-				printf("\nHas seleccionado MODO MULTIJUGADOR\n");
-    				do
-				{
-    					printf("\nSelecciona el numero de jugadores 2-4\n");
-					printf("0: Salir del Programa\n");
-					scanf("%i",&jugadores);
-    				} while(jugadores==1||jugadores<0||jugadores>4);
-    				if (jugadores == 0)
-					break;
-				do
-				{
-					printf("\nSelecciona la dificultad del juego\nFacil: 1\nDificil: 2\n");
-    					scanf("%s",&dificultad);
-    				} while(dificultad!='1' && dificultad!='2');
-				modomultijugador(jugadores, dificultad);
-    				break;
-    			case 3:
-      				printf("Saliendo del programa\n");
-      				break;
-    		}
-   		do
-		{
-			printf("\nQuieres Jugar de nuevo?\nSi: y\nNo: n \n");
-    			scanf("%s",&repetir);
-   		} while(repetir!='y' && repetir!='n'&& repetir!='Y'&& repetir!='N');
-	} while(repetir=='y'||repetir=='Y');
-	return 0;
-}
+#include "Domino.h"
 
 void modomultijugador(int jugadores, int dificultad) // el parametro n se refiere al numero de jugadores y m a la dificultad
 {
@@ -286,7 +214,7 @@ void modomultijugador(int jugadores, int dificultad) // el parametro n se refier
 	turno=siguienteturno(jugadores, turno); // avanzamos 1 turno, de forma que le toque al siguiente jugador
 	juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 	
-	if(dificultad=='1')
+	if(dificultad=='1') // se ejecuta el modo de juego facil
 	{
 		do
 		{
@@ -363,7 +291,87 @@ void modomultijugador(int jugadores, int dificultad) // el parametro n se refier
 			turno=siguienteturno(jugadores, turno);
 			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 		} while(final<3);
-	printf("\n\n\t   Â¡Â¡Â¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+	}
+	
+	if(dificultad=='2') // se ejecuta el modo de juego dificil
+	{
+		do
+		{
+			do
+			{
+				switch(turno)
+				{
+					case 0: // turno del jugador 1
+						repeticion=jugadorlocal(fichas, fichasjugador1, tablero, contadortablero, contadorpozo, repeticion);
+						if(repeticion==0&&contadorpozo!=-1)
+						{
+							robarficha(fichasjugador1, pozo, contadorpozo);
+							contadorpozo-=1;
+							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+						}
+						if(repeticion==1)
+						{
+							ganador=1;
+							contadortablero+=1;
+							final=0;
+						}
+						break;
+					case 1: // turno del jugador 2
+						repeticion=mododificil(fichas, fichasjugador2, tablero, contadortablero, repeticion);
+						if(repeticion==0&&contadorpozo!=-1)
+						{
+							robarficha(fichasjugador2, pozo, contadorpozo);
+							contadorpozo-=1;
+							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+						}
+						if(repeticion==1)
+						{
+							ganador=2;
+							contadortablero+=1;
+							final=0;
+						}
+						break;
+					case 2: // turno del jugador 3
+						repeticion=mododificil(fichas, fichasjugador3, tablero, contadortablero, repeticion);
+						if(repeticion==0&&contadorpozo!=-1)
+						{
+							robarficha(fichasjugador3, pozo, contadorpozo);
+							contadorpozo-=1;
+							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+						}
+						if(repeticion==1)
+						{
+							ganador=3;
+							contadortablero+=1;
+							final=0;
+						}
+						break;
+					case 3: // turno del jugador 4
+						repeticion=mododificil(fichas, fichasjugador4, tablero, contadortablero, repeticion);
+						if(repeticion==0&&contadorpozo!=-1)
+						{
+							robarficha(fichasjugador4, pozo, contadorpozo);
+							contadorpozo-=1;
+							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+						}
+						if(repeticion==1)
+						{
+							ganador=4;
+							contadortablero+=1;
+							final=0;
+						}
+						break;
+				} 
+			} while(repeticion==0&&contadorpozo!=-1);
+			if(repeticion==0)
+				final+=1;
+			final=comprueba(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, final, turno);
+			repeticion=0;
+			turno=siguienteturno(jugadores, turno);
+			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+		} while(final<3);
+	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	}
 }
 
@@ -400,7 +408,7 @@ int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], 
 }
 
 int primerturno(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores, int fichagrande)
-// esta funcion lo que hace es determinar que jugador tiene la ficha mas alta
+// esta funcion determina que jugador tiene la ficha mas alta
 {
 	int i, j, turno;
 	for(j=1; j<=jugadores; j++) // repito el bucle tantas veces como jugadores haya en la partida
@@ -411,27 +419,27 @@ int primerturno(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[]
 			{
 				case 1:
 					if(fichasjugador1[i]==fichagrande) // si la casilla coincide con la ficha mas alta, le toca a ese jugador
-						turno=0; // el turno del jugador 1 lo simbolizo con el numero 0
+						return 0; // el turno del jugador 1 lo simbolizo con el numero 0
 					break;
 				case 2:
 					if(fichasjugador2[i]==fichagrande)
-						turno=1; // el turno del jugador 2 lo simbolizo con el numero 1
+						return 1; // el turno del jugador 2 lo simbolizo con el numero 1
 					break;
 				case 3:
 					if(fichasjugador3[i]==fichagrande)
-						turno=2; // el turno del jugador 3 lo simbolizo con el numero 2
+						return 2; // el turno del jugador 3 lo simbolizo con el numero 2
 					break;
 				case 4:
 					if(fichasjugador4[i]==fichagrande)
-						turno=3; // el turno del jugador 4 lo simbolizo con el numero 3
+						return 3; // el turno del jugador 4 lo simbolizo con el numero 3
 					break;
 			}
 		}
 	}
-	return turno; // la funcion me devuelve que jugador tiene la ficha mas alta
 }
 
 void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int jugadores, int turno, int final)
+// esta funcion sirve para imprimir el tablero de juego
 {
 	int i, j;
 	// este bucle sirve para imprimir las fichas del tablero
@@ -444,7 +452,7 @@ void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int ficha
 			imprimirreves(fichas, tablero, j);
 	}
 	printf("\n\n");
-	// este bucle sirve para imprimr las fichas de cada jugador
+	// este bucle sirve para imprimir las fichas de cada jugador
 	for(j=1; j<=jugadores; j++)
 	{
 		printf("Jugador %i: ", j);
@@ -472,12 +480,14 @@ void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int ficha
 		}
 		printf("\n");
 	}
+	// este bucle sirve para imprimir las fichas del pozo
 	printf("\nPozo:   ");
 	for(j=0; j<28; j++)
 	{
 		if(pozo[j]>0)
 			imprimirnormal(fichas, pozo, j);
 	}
+	// en el caso de que la partida haya terminado, imprime el ganador
 	if(final<3)
 		printf("\n\n\t\tTURNO DEL JUGADOR %i\n\n", turno+1);
 }
@@ -514,37 +524,37 @@ int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contad
 	{
 		do
 		{
-    			printf("Opciones para este turno:\n");
-    			printf("1: Poner ficha\n");
+    		printf("Opciones para este turno:\n");
+    		printf("1: Poner ficha\n");
 			printf("2: Robar ficha\n");
 			scanf("%i",&eleccion);
 			if(posibilidad==0&&eleccion==1)
 			{
-    				do
- 	   			{
-   	 				printf("No puede poner ficha. Hay que robar\n");
-   	 				scanf("%i",&eleccion);
+    			do
+    			{
+    				printf("No puede poner ficha. Hay que robar\n");
+    				scanf("%i",&eleccion);
 				}while(eleccion!=2);
 			}
-    		} while(eleccion<1||eleccion>2);
+    	} while(eleccion<1||eleccion>2);
 	}
 	if(contadorpozo==-1) // si no hay fichas en el pozo
 	{
 		do
 		{
-    			printf("Opciones para este turno:\n");
-    			printf("1: Poner ficha\n");
+    		printf("Opciones para este turno:\n");
+    		printf("1: Poner ficha\n");
 			printf("2: No puedo colocar\n");
 			scanf("%i",&eleccion);
 			if(posibilidad==0&&eleccion==1)
 			{
-    				do
-    				{
-    					printf("No puede poner ficha. Hay que pasar.\n");
-    					scanf("%i",&eleccion);
+    			do
+    			{
+    				printf("No puede poner ficha. Hay que pasar.\n");
+    				scanf("%i",&eleccion);
 				} while(eleccion!=2);
 			}
-    		} while(eleccion<1||eleccion>2);
+    	} while(eleccion<1||eleccion>2);
 	}
 	posibilidad=0;
 	switch(eleccion)
@@ -565,7 +575,7 @@ int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contad
 				}
 			}
 			posibilidad=0;
-			printf("Por que lado la quiere colocar?\n");
+			printf("¿Por que lado la quiere colocar?\n");
 			printf("1: Derecha\n");
 			printf("2: Izquierda\n");
 			scanf("%i",&eleccionlado);
@@ -719,7 +729,7 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 	int i,j;
 	for(i=0; i<27; i++)
 	{
-		if((tablero[0]>0)&&(tablero[contadortablero]>0)) // si los nÃƒÂºmeros asociados a ambas fichas son positivos...
+		if((tablero[0]>0)&&(tablero[contadortablero]>0)) // si los numeros asociados a ambas fichas son positivos...
 		{
 			if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
@@ -727,19 +737,19 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 					tablero[contadortablero+1-j]=tablero[contadortablero-j];
 				tablero[0]=jugador[i];
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero1)&&(repeticion==0))
 			{
 				tablero[contadortablero+1]=jugador[i];
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
 				tablero[contadortablero+1]=jugador[i]*(-1);
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero1)&&(repeticion==0))
 			{
@@ -747,7 +757,7 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 					tablero[contadortablero+1-j]=tablero[contadortablero-j];
 				tablero[0]=jugador[i]*(-1);
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 		}
 		if((tablero[0]>0)&&(tablero[contadortablero]<0)) // en el caso de que el primero sea positivo y el segundo negativo...
@@ -758,19 +768,19 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 					tablero[contadortablero+1-j]=tablero[contadortablero-j];
 				tablero[0]=jugador[i];
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero1)&&(repeticion==0))
 			{
 				tablero[contadortablero+1]=jugador[i];
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
 				tablero[contadortablero+1]=jugador[i]*(-1);
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero1)&&(repeticion==0))
 			{
@@ -778,7 +788,7 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 					tablero[contadortablero+1-j]=tablero[contadortablero-j];
 				tablero[0]=jugador[i]*(-1);
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 		}
 		if((tablero[0]<0)&&(tablero[contadortablero]>0)) // en el caso de que el primero sea negativo y el segundo positivo...
@@ -789,19 +799,19 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 					tablero[contadortablero+1-j]=tablero[contadortablero-j];
 				tablero[0]=jugador[i];
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero1)&&(repeticion==0))
 			{
 				tablero[contadortablero+1]=jugador[i];
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
 				tablero[contadortablero+1]=jugador[i]*(-1);
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero1)&&(repeticion==0))
 			{
@@ -809,10 +819,10 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 					tablero[contadortablero+1-j]=tablero[contadortablero-j];
 				tablero[0]=jugador[i]*(-1);
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 		}
-		if((tablero[0]<0)&&(tablero[contadortablero]<0)) // si los nÃƒÂºmeros asociados a ambas fichas son negativos...
+		if((tablero[0]<0)&&(tablero[contadortablero]<0)) // si los numeros asociados a ambas fichas son negativos...
 		{
 			if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
@@ -820,19 +830,19 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 					tablero[contadortablero+1-j]=tablero[contadortablero-j];
 				tablero[0]=jugador[i];
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero1)&&(repeticion==0))
 			{
 				tablero[contadortablero+1]=jugador[i];
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero2)&&(repeticion==0))
 			{
 				tablero[contadortablero+1]=jugador[i]*(-1);
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 			else if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero1)&&(repeticion==0))
 			{
@@ -840,11 +850,224 @@ int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero,
 					tablero[contadortablero+1-j]=tablero[contadortablero-j];
 				tablero[0]=jugador[i]*(-1);
 				jugador[i]=0;
-				repeticion=1;
+				return 1;
 			}
 		}	
-	}	
-	return repeticion;
+	}
+	return 0;	
+}
+
+int mododificil(ficha fichas[], int jugador[], int tablero[], int contadortablero, int repeticion)
+{
+	dificil repeticiones[7] =
+	{
+		{0, 0},
+		{1, 0},
+		{2, 0},
+		{3, 0},
+		{4, 0},
+		{5, 0},
+		{6, 0}
+	};
+	int i, j, h, ordenados[7], repito=0, cambio;
+	for(i=0; i<=contadortablero; i++) // este bucle sirve para contar cuantas veces aparece cada numero
+	{
+		if(tablero[i]>0)
+		{
+			for(j=0; j<7; j++)
+			{
+				if(fichas[tablero[i]].numero1==repeticiones[j].numero)
+					repeticiones[j].repeticiones+=1;
+				if(fichas[tablero[i]].numero2==repeticiones[j].numero)
+					repeticiones[j].repeticiones+=1;
+			}
+		}
+		if(tablero[i]<0)
+		{
+			for(j=0; j<7; j++)
+			{
+				if(fichas[tablero[i]*(-1)].numero1==repeticiones[j].numero)
+					repeticiones[j].repeticiones+=1;
+				if(fichas[tablero[i]*(-1)].numero2==repeticiones[j].numero)
+					repeticiones[j].repeticiones+=1;
+			}
+		}
+	}
+	for(i=0; i<27; i++)
+	{
+		for(j=0; j<7; j++)
+		{
+			if(fichas[jugador[i]].numero1==repeticiones[j].numero)
+				repeticiones[j].repeticiones+=1;
+			if(fichas[jugador[i]].numero2==repeticiones[j].numero)
+				repeticiones[j].repeticiones+=1;
+		}
+	}
+	for(i=0; i<7; i++)
+		ordenados[i]=repeticiones[i].repeticiones;
+	for(i=0; i<6; i++) // ordeno el numero de repeticiones de mayor a menor
+ 	{
+ 		for(j=i+1; j<7; j++)
+ 		{
+			if(ordenados[i] < ordenados[j])
+			{
+				cambio=ordenados[j];
+				ordenados[j]=ordenados[i];
+				ordenados[i]=cambio;
+			}
+ 		}
+	}
+	
+	i=0;
+	j=0;
+	while(i<7) // este bucle sirve para sustituir el numero de repeticiones por el numero repetido
+	{
+		while(j<7)
+		{
+			if((ordenados[i]==repeticiones[j].repeticiones)&&(repito==0))
+			{
+				ordenados[i]=repeticiones[j].numero;
+				repeticiones[j].repeticiones=-1;
+				repito=1;
+			}
+			j++;
+		}
+		repito=0;
+		j=0;
+		i++;
+	}
+	
+	for(h=0; h<7; h++)
+	{
+		for(i=0; i<27; i++)
+		{
+			if((tablero[0]>0)&&(tablero[contadortablero]>0)) // si los numeros asociados a ambas fichas son positivos...
+			{
+				if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero2)&&(repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
+				{
+					for(j=0; j<=contadortablero; j++)
+						tablero[contadortablero+1-j]=tablero[contadortablero-j];
+					tablero[0]=jugador[i];
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero1)&&(repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
+				{
+					tablero[contadortablero+1]=jugador[i];
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero2)&&(repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
+				{
+					tablero[contadortablero+1]=jugador[i]*(-1);
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero1)&&(repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
+				{
+					for(j=0; j<=contadortablero; j++)
+						tablero[contadortablero+1-j]=tablero[contadortablero-j];
+					tablero[0]=jugador[i]*(-1);
+					jugador[i]=0;
+					return 1;
+				}
+			}
+			if((tablero[0]>0)&&(tablero[contadortablero]<0)) // en el caso de que el primero sea positivo y el segundo negativo...
+			{
+				if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero2)&&(repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
+				{
+					for(j=0; j<=contadortablero; j++)
+						tablero[contadortablero+1-j]=tablero[contadortablero-j];
+					tablero[0]=jugador[i];
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero1)&&(repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
+				{
+					tablero[contadortablero+1]=jugador[i];
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero2)&&(repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
+				{
+					tablero[contadortablero+1]=jugador[i]*(-1);
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero1)&&(repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
+				{
+					for(j=0; j<=contadortablero; j++)
+						tablero[contadortablero+1-j]=tablero[contadortablero-j];
+					tablero[0]=jugador[i]*(-1);
+					jugador[i]=0;
+					return 1;
+				}
+			}
+			if((tablero[0]<0)&&(tablero[contadortablero]>0)) // en el caso de que el primero sea negativo y el segundo positivo...
+			{
+				if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero2)&&(repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
+				{
+					for(j=0; j<=contadortablero; j++)
+						tablero[contadortablero+1-j]=tablero[contadortablero-j];
+					tablero[0]=jugador[i];
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero1)&&(repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
+				{
+					tablero[contadortablero+1]=jugador[i];
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[jugador[i]].numero2)&&(repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
+				{
+					tablero[contadortablero+1]=jugador[i]*(-1);
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero1)&&(repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
+				{
+					for(j=0; j<=contadortablero; j++)
+						tablero[contadortablero+1-j]=tablero[contadortablero-j];
+					tablero[0]=jugador[i]*(-1);
+					jugador[i]=0;
+					return 1;
+				}
+			}
+			if((tablero[0]<0)&&(tablero[contadortablero]<0)) // si los numeros asociados a ambas fichas son negativos...
+			{
+				if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero2)&&(repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
+				{
+					for(j=0; j<=contadortablero; j++)
+						tablero[contadortablero+1-j]=tablero[contadortablero-j];
+					tablero[0]=jugador[i];
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero1)&&(repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
+				{
+					tablero[contadortablero+1]=jugador[i];
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[jugador[i]].numero2)&&(repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
+				{
+					tablero[contadortablero+1]=jugador[i]*(-1);
+					jugador[i]=0;
+					return 1;
+				}
+				else if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero1)&&(repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
+				{
+					for(j=0; j<=contadortablero; j++)
+						tablero[contadortablero+1-j]=tablero[contadortablero-j];
+					tablero[0]=jugador[i]*(-1);
+					jugador[i]=0;
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;	
 }
 
 int comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int final, int turno)
