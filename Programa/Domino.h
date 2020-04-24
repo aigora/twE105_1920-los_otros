@@ -10,7 +10,7 @@ typedef struct
 	int repeticiones;
 } dificil; // esta estructura la voy a emplear en el modo dificil, el primer numero es el numero contado y el segundo es el numero de veces que se repite
 
-void modomultijugador(int jugadores, int dificultad); // esta funcion va a contener todo el sistema de juego
+void modomultijugador(int jugadores, int dificultad, int cargar); // esta funcion va a contener todo el sistema de juego
 	int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores);
 	int primerturno(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int jugadores, int fichagrande);
 	void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int jugadores, int turno, int final);
@@ -26,3 +26,5 @@ void modomultijugador(int jugadores, int dificultad); // esta funcion va a conte
 	int modofacil(ficha fichas[], int jugador[], int tablero[], int contadortablero, int repeticion);
 	int mododificil(ficha fichas[], int jugador[], int tablero[], int contadortablero, int repeticion);
 	int comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int final, int turno);
+	
+void introducirfichero(int jugadores, int dificultad, int turno, int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int contadortablero, int contadorpozo, int final, int ganador);

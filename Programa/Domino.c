@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include "Domino.h"
 
-void modomultijugador(int jugadores, int dificultad) // el parametro n se refiere al numero de jugadores y m a la dificultad
+void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro n se refiere al numero de jugadores y m a la dificultad
 {
+	FILE *txt;
 	ficha fichas[29] = // voy a asociar a cada ficha 1 numero, que corresponde con la posicion ocupada en el vector
 	{
 		{8, 8}, // fila 0. Se que esta ficha no existe pero la necesito para poder dar la vuelta a los numeros de la ficha
@@ -39,7 +40,8 @@ void modomultijugador(int jugadores, int dificultad) // el parametro n se refier
 		{6, 6}  // fila 28
 	};
 	int aleatorio, igual; // estas dos variables van a servir para el reparto inicial de fichas
-	int i, j; // estas dos variables las vamos a utilizar para los bucles
+	int i=0, j; // estas dos variables las vamos a utilizar para los bucles
+	int cargarpartida[175]; //esta variable va a servir para leer los valores del fichero
 	int valores[28]={0}; // vector donde voy a almacenar todos los valores de "aleatorio"
 	int fichasjugador1[28]={0}; // vector donde voy a almacenar las fichas del jugador 1
 	int fichasjugador2[28]={0}; // vector donde voy a almacenar las fichas del jugador 2
@@ -50,171 +52,224 @@ void modomultijugador(int jugadores, int dificultad) // el parametro n se refier
 	int turno; // esta variable sirve para saber quien empieza a jugar
 	int fichagrande; // esta variable sirve para saber cual es la ficha mas alta de las repartidas
 	int contadortablero=0; // esta variable sirve para contar el numero de fichas que hay en el vector "tablero"
-	int contadorpozo; // esta variable sirve para contar el numero de fichas que hay en el vector "pozo"
+	int contadorpozo=0; // esta variable sirve para contar el numero de fichas que hay en el vector "pozo"
 	int final=0; // esta variable determinara cuando se termina la partida
 	int repeticion=0; // esta variable se usa para que cada jugador solo puede poner 1 pieza por ronda;
-	int ganador; //esta variable va a determinar quien ha ganado la partida
+	int ganador=0; //esta variable va a determinar quien ha ganado la partida
 
-	srand(time(NULL));
-	for(i=0; i<28; i++)
+	if(cargar==1) // solo se va a ejecutar cuando se empieze una nueva partida
 	{
-		do
+		srand(time(NULL));
+		for(i=0; i<28; i++)
 		{
-			igual=0; 
-			aleatorio=1+(rand()%28); 
-			for(j=0; j<i; j++)
+			do
 			{
-				if(aleatorio==valores[j])
-					igual=1;
-			}
-		}while(igual==1);
-		valores[i]=aleatorio;
-	}
-	
-	// este bucle sirve para repatir las fichas entre el numero indicado de jugadores usando el vector "valores"
-	// asocio 7 numeros consecutivos a cada jugador, es decir, los 7 primeros al jugador 1, del 8 al 15 al jugador 2 y asi sucesivamente
-	for(j=1; j<=jugadores+1; j++) // repito el bucle tantas veces como jugadores haya, pues no quiero repartir a jugadores "inexistentes" en la partida
-	{
-		if(jugadores==2)
-		{
-			switch(j) 
-			{
-				case 1: // reparto al jugador 1
-					for(i=0; i<7; i++)
-					{
-						aleatorio=valores[i];
-						fichasjugador1[i]=aleatorio;
-					}
-					break;
-				case 2: // reparto al jugador 2
-					for(i=0; i<7; i++)
-					{
-						aleatorio=valores[i+7];
-						fichasjugador2[i]=aleatorio;
-					}
-					break;
-				case 3: // introduzco el resto de las fichas en el vector "pozo"
-					for(i=0; i<14; i++)
-					{
-						aleatorio=valores[i+14];
-						pozo[i]=aleatorio;
-					}
-					break;
-			}
-			contadorpozo=13;
+				igual=0; 
+				aleatorio=1+(rand()%28); 
+				for(j=0; j<i; j++)
+				{
+					if(aleatorio==valores[j])
+						igual=1;
+				}
+			}while(igual==1);
+			valores[i]=aleatorio;
 		}
-		if(jugadores==3) // si hay 3 jugadores, reparto 7 fichas a cada jugador y las 7 restantes van al pozo
+		
+		// este bucle sirve para repatir las fichas entre el numero indicado de jugadores usando el vector "valores"
+		// asocio 7 numeros consecutivos a cada jugador, es decir, los 7 primeros al jugador 1, del 8 al 15 al jugador 2 y asi sucesivamente
+		for(j=1; j<=jugadores+1; j++) // repito el bucle tantas veces como jugadores haya, pues no quiero repartir a jugadores "inexistentes" en la partida
 		{
-			for(i=0; i<7;i++)
+			if(jugadores==2)
 			{
 				switch(j) 
 				{
 					case 1: // reparto al jugador 1
-						aleatorio=valores[i];
-						fichasjugador1[i]=aleatorio;
+						for(i=0; i<7; i++)
+						{
+							aleatorio=valores[i];
+							fichasjugador1[i]=aleatorio;
+						}
 						break;
 					case 2: // reparto al jugador 2
-						aleatorio=valores[i+7];
-						fichasjugador2[i]=aleatorio;
+						for(i=0; i<7; i++)
+						{
+							aleatorio=valores[i+7];
+							fichasjugador2[i]=aleatorio;
+						}
 						break;
-					case 3: // reparto al jugador 3
-						aleatorio=valores[i+14];
-						fichasjugador3[i]=aleatorio;
-						break;
-					case 4: // introduzco el resto de las fichas en el vector "pozo"
-						aleatorio=valores[i+21];
-						pozo[i]=aleatorio;
+					case 3: // introduzco el resto de las fichas en el vector "pozo"
+						for(i=0; i<14; i++)
+						{
+							aleatorio=valores[i+14];
+							pozo[i]=aleatorio;
+						}
 						break;
 				}
+				contadorpozo=13;
 			}
-			contadorpozo=6;
-		}
-		if(jugadores==4) // si hay 4 jugadores, reparto 7 fichas a cada jugador
-		{
-			for(i=0; i<7;i++)
+			if(jugadores==3) // si hay 3 jugadores, reparto 7 fichas a cada jugador y las 7 restantes van al pozo
 			{
-				switch(j) 
+				for(i=0; i<7;i++)
 				{
-					case 1: // reparto al jugador 1
-						aleatorio=valores[i];
-						fichasjugador1[i]=aleatorio;
-						break;
-					case 2: // reparto al jugador 2
-						aleatorio=valores[i+7];
-						fichasjugador2[i]=aleatorio;
-						break;
-					case 3: // reparto al jugador 3
-						aleatorio=valores[i+14];
-						fichasjugador3[i]=aleatorio;
-						break;
-					case 4: // reparto al jugador 4
-						aleatorio=valores[i+21];
-						fichasjugador4[i]=aleatorio;
-						break;
-					case 5: // no hay fichas en el pozo
-						break;
+					switch(j) 
+					{
+						case 1: // reparto al jugador 1
+							aleatorio=valores[i];
+							fichasjugador1[i]=aleatorio;
+							break;
+						case 2: // reparto al jugador 2
+							aleatorio=valores[i+7];
+							fichasjugador2[i]=aleatorio;
+							break;
+						case 3: // reparto al jugador 3
+							aleatorio=valores[i+14];
+							fichasjugador3[i]=aleatorio;
+							break;
+						case 4: // introduzco el resto de las fichas en el vector "pozo"
+							aleatorio=valores[i+21];
+							pozo[i]=aleatorio;
+							break;
+					}
 				}
+				contadorpozo=6;
 			}
-			contadorpozo=-1;
-		}
-	}
-	// tras este bucle ya tengo a todos los miembros de la partida con 7 fichas cada uno y las restantes en el pozo. Toca ver quien empieza a jugar
-	// en el domino, empieza a jugar quien tenga la ficha mas alta, empezando por las fichas dobles
-	fichagrande=fichaalta(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, jugadores); // veo cual es la ficha mas alta
-	turno=primerturno(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, jugadores, fichagrande); // veo quien tiene esa ficha
-	juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final); // imprimo el tablero de juego
-	
-	// este bucle sirve para ejecutar el primer turno, el cual se realizara de forma automatica
-	// como ya sabemos quien empieza la partida, pone la ficha mas alta en el tablero y se la quita al jugador correspondiente
-	for(i=0; i<28; i++)
-	{
-		switch(turno) // dependiendo de quien empieza la partida
-		{
-			case 0: 
-				if(fichasjugador1[i]==fichagrande)
-				{
-					tablero[0]=fichagrande; // coloca la ficha en el tablero
-					fichasjugador1[i]=0; // le quita la ficha al jugador
-				}
-				break;
-			case 1:
-				if(fichasjugador2[i]==fichagrande)
-				{
-					tablero[0]=fichagrande;
-					fichasjugador2[i]=0;
-				}
-				break;
-			case 2:
-				if(fichasjugador3[i]==fichagrande)
-				{
-					tablero[0]=fichagrande;
-					fichasjugador3[i]=0;
-				}
-				break;
-			case 3:
-				if(fichasjugador4[i]==fichagrande)
-				{
-					tablero[0]=fichagrande;
-					fichasjugador4[i]=0;
-				}
-				break;
-		}
-	}
-	if(turno==0)
-	{
-		for(i=0; i<7; i++)
-		{
-			if(fichasjugador1[i]==0)
+			if(jugadores==4) // si hay 4 jugadores, reparto 7 fichas a cada jugador
 			{
-				for(j=0; j<27-i;j++)
-					fichasjugador1[i+j]=fichasjugador1[i+1+j];
+				for(i=0; i<7;i++)
+				{
+					switch(j) 
+					{
+						case 1: // reparto al jugador 1
+							aleatorio=valores[i];
+							fichasjugador1[i]=aleatorio;
+							break;
+						case 2: // reparto al jugador 2
+							aleatorio=valores[i+7];
+							fichasjugador2[i]=aleatorio;
+							break;
+						case 3: // reparto al jugador 3
+							aleatorio=valores[i+14];
+							fichasjugador3[i]=aleatorio;
+							break;
+						case 4: // reparto al jugador 4
+							aleatorio=valores[i+21];
+							fichasjugador4[i]=aleatorio;
+							break;
+						case 5: // no hay fichas en el pozo
+							break;
+					}
+				}
+				contadorpozo=-1;
 			}
 		}
+		// tras este bucle ya tengo a todos los miembros de la partida con 7 fichas cada uno y las restantes en el pozo. Toca ver quien empieza a jugar
+		// en el domino, empieza a jugar quien tenga la ficha mas alta, empezando por las fichas dobles
+		fichagrande=fichaalta(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, jugadores); // veo cual es la ficha mas alta
+		turno=primerturno(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, jugadores, fichagrande); // veo quien tiene esa ficha
+		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final); // imprimo el tablero de juego
+		
+		// este bucle sirve para ejecutar el primer turno, el cual se realizara de forma automatica
+		// como ya sabemos quien empieza la partida, pone la ficha mas alta en el tablero y se la quita al jugador correspondiente
+		for(i=0; i<28; i++)
+		{
+			switch(turno) // dependiendo de quien empieza la partida
+			{
+				case 0: 
+					if(fichasjugador1[i]==fichagrande)
+					{
+						tablero[0]=fichagrande; // coloca la ficha en el tablero
+						fichasjugador1[i]=0; // le quita la ficha al jugador
+					}
+					break;
+				case 1:
+					if(fichasjugador2[i]==fichagrande)
+					{
+						tablero[0]=fichagrande;
+						fichasjugador2[i]=0;
+					}
+					break;
+				case 2:
+					if(fichasjugador3[i]==fichagrande)
+					{
+						tablero[0]=fichagrande;
+						fichasjugador3[i]=0;
+					}
+					break;
+				case 3:
+					if(fichasjugador4[i]==fichagrande)
+					{
+						tablero[0]=fichagrande;
+						fichasjugador4[i]=0;
+					}
+					break;
+			}
+		}
+		if(turno==0)
+		{
+			for(i=0; i<7; i++)
+			{
+				if(fichasjugador1[i]==0)
+				{
+					for(j=0; j<27-i;j++)
+						fichasjugador1[i+j]=fichasjugador1[i+1+j];
+				}
+			}
+		}
+		turno=siguienteturno(jugadores, turno); // avanzamos 1 turno, de forma que le toque al siguiente jugador
+		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+		introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortablero, contadorpozo, final, ganador);
 	}
-	turno=siguienteturno(jugadores, turno); // avanzamos 1 turno, de forma que le toque al siguiente jugador
-	juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+
+	if(cargar==2)
+	{
+		txt=fopen("partida.txt", "r");
+		if(txt==NULL)
+		{
+			printf("Error al abrir el archivo.\n");
+		}
+		else
+		{
+			while(fscanf(txt, "%i", &jugadores)!=EOF)
+			{
+				cargarpartida[i]=jugadores;
+				i++;
+			}
+		}
+		fclose(txt);
+		i=0;
+		for(i=0; i<175; i++)
+		{
+			if(i==0)
+				jugadores=cargarpartida[i];
+			if(i==1)
+				dificultad=cargarpartida[i];
+			if(i==2)
+				turno=cargarpartida[i];
+			if((i>=3)&&(i<=30))
+				fichasjugador1[i-3]=cargarpartida[i];
+			if((i>=31)&&(i<=58))
+				fichasjugador2[i-31]=cargarpartida[i];
+			if((i>=59)&&(i<=86))
+				fichasjugador3[i-59]=cargarpartida[i];
+			if((i>=87)&&(i<=114))
+				fichasjugador4[i-87]=cargarpartida[i];
+			if((i>=115)&&(i<=142))
+				tablero[i-115]=cargarpartida[i];
+			if((i>=143)&&(i<=170))
+				pozo[i-143]=cargarpartida[i];
+			if(i==171)
+				contadortablero=cargarpartida[i];
+			if(i==172)
+				contadorpozo=cargarpartida[i];
+			if(i==173)
+				final=cargarpartida[i];
+			if(i==174)
+				ganador=cargarpartida[i];
+		}
+		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+	}
 	
-	if(dificultad=='1') // se ejecuta el modo de juego facil
+	if(dificultad==1) // se ejecuta el modo de juego facil
 	{
 		do
 		{
@@ -290,11 +345,12 @@ void modomultijugador(int jugadores, int dificultad) // el parametro n se refier
 			repeticion=0;
 			turno=siguienteturno(jugadores, turno);
 			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+			introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortablero, contadorpozo, final, ganador);
 		} while(final<3);
-	printf("\n\n\t   Â¡Â¡Â¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	}
 	
-	if(dificultad=='2') // se ejecuta el modo de juego dificil
+	if(dificultad==2) // se ejecuta el modo de juego dificil
 	{
 		do
 		{
@@ -370,8 +426,9 @@ void modomultijugador(int jugadores, int dificultad) // el parametro n se refier
 			repeticion=0;
 			turno=siguienteturno(jugadores, turno);
 			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+			introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortablero, contadorpozo, final, ganador);
 		} while(final<3);
-	printf("\n\n\t   Â¡Â¡Â¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	}
 }
 
@@ -524,37 +581,37 @@ int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contad
 	{
 		do
 		{
-    			printf("Opciones para este turno:\n");
-    			printf("1: Poner ficha\n");
+    		printf("Opciones para este turno:\n");
+    		printf("1: Poner ficha\n");
 			printf("2: Robar ficha\n");
 			scanf("%i",&eleccion);
 			if(posibilidad==0&&eleccion==1)
 			{
-    				do
-    				{
-    					printf("No puede poner ficha. Hay que robar\n");
-    					scanf("%i",&eleccion);
+    			do
+    			{
+    				printf("No puede poner ficha. Hay que robar\n");
+    				scanf("%i",&eleccion);
 				}while(eleccion!=2);
 			}
-    		} while(eleccion<1||eleccion>2);
+    	} while(eleccion<1||eleccion>2);
 	}
 	if(contadorpozo==-1) // si no hay fichas en el pozo
 	{
 		do
 		{
-    			printf("Opciones para este turno:\n");
-    			printf("1: Poner ficha\n");
+    		printf("Opciones para este turno:\n");
+    		printf("1: Poner ficha\n");
 			printf("2: No puedo colocar\n");
 			scanf("%i",&eleccion);
 			if(posibilidad==0&&eleccion==1)
 			{
-    				do
-    				{
-    					printf("No puede poner ficha. Hay que pasar.\n");
-    					scanf("%i",&eleccion);
+    			do
+    			{
+    				printf("No puede poner ficha. Hay que pasar.\n");
+    				scanf("%i",&eleccion);
 				} while(eleccion!=2);
 			}
-    		} while(eleccion<1||eleccion>2);
+    	} while(eleccion<1||eleccion>2);
 	}
 	posibilidad=0;
 	switch(eleccion)
@@ -575,7 +632,7 @@ int jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int contad
 				}
 			}
 			posibilidad=0;
-			printf("Â¿Por que lado la quiere colocar?\n");
+			printf("¿Por que lado la quiere colocar?\n");
 			printf("1: Derecha\n");
 			printf("2: Izquierda\n");
 			scanf("%i",&eleccionlado);
@@ -1098,4 +1155,43 @@ int comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], 
 	if(sinfichas==1)
 		final=4;
 	return final;
+}
+
+void introducirfichero(int jugadores, int dificultad, int turno, int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int contadortablero, int contadorpozo, int final, int ganador)
+{
+	FILE *txt;
+	int i;
+	txt=fopen("partida.txt", "w");
+	if(txt==NULL)
+	{
+		printf("Error al abrir el archivo.\n");
+	}
+	else
+	{
+		fprintf(txt, "%i\n", jugadores);
+		fprintf(txt, "%i\n", dificultad);
+		fprintf(txt, "%i\n", turno);
+		for(i=0; i<28; i++)
+			fprintf(txt, "%i ", fichasjugador1[i]);
+		fprintf(txt, "\n");
+		for(i=0; i<28; i++)
+			fprintf(txt, "%i ", fichasjugador2[i]);
+		fprintf(txt, "\n");
+		for(i=0; i<28; i++)
+			fprintf(txt, "%i ", fichasjugador3[i]);
+		fprintf(txt, "\n");
+		for(i=0; i<28; i++)
+			fprintf(txt, "%i ", fichasjugador4[i]);
+		fprintf(txt, "\n");
+		for(i=0; i<28; i++)
+			fprintf(txt, "%i ", tablero[i]);
+		fprintf(txt, "\n");
+		for(i=0; i<28; i++)
+			fprintf(txt, "%i ", pozo[i]);
+		fprintf(txt, "\n%i\n", contadortablero);
+		fprintf(txt, "%i\n", contadorpozo);
+		fprintf(txt, "%i\n", final);
+		fprintf(txt, "%i\n", ganador);
+	}
+	fclose(txt);
 }
