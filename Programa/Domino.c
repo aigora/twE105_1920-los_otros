@@ -6,41 +6,8 @@
 void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro n se refiere al numero de jugadores y m a la dificultad
 {
 	FILE *txt;
-	ficha fichas[29] = // voy a asociar a cada ficha 1 numero, que corresponde con la posicion ocupada en el vector
-	{
-		{8, 8}, // fila 0. Se que esta ficha no existe pero la necesito para poder dar la vuelta a los numeros de la ficha
-		        // Voy a simbolizar la ficha "inversa" con el numero asociado pero en negativo
-		{0, 1}, // fila 1
-		{0, 2}, // fila 2
-		{0, 3}, // fila 3
-		{0, 4}, // fila 4
-		{0, 5}, // fila 5
-		{0, 6}, // fila 6
-		{1, 2}, // fila 7
-		{1, 3}, // fila 8
-		{1, 4}, // fila 9
-		{1, 5}, // fila 10
-		{1, 6}, // fila 11
-		{2, 3}, // fila 12
-		{2, 4}, // fila 13
-		{2, 5}, // fila 14
-		{2, 6}, // fila 15
-		{3, 4}, // fila 16
-		{3, 5}, // fila 17
-		{3, 6}, // fila 18
-		{4, 5}, // fila 19
-		{4, 6}, // fila 20
-		{5, 6}, // fila 21
-		{0, 0}, // fila 22
-		{1, 1}, // fila 23
-		{2, 2}, // fila 24
-		{3, 3}, // fila 25
-		{4, 4}, // fila 26
-		{5, 5}, // fila 27
-		{6, 6}  // fila 28
-	};
+	ficha fichas[29], *p=fichas;
 	int aleatorio, igual; // estas dos variables van a servir para el reparto inicial de fichas
-	int i=0, j; // estas dos variables las vamos a utilizar para los bucles
 	int cargarpartida[175]; //esta variable va a servir para leer los valores del fichero
 	int valores[28]={0}; // vector donde voy a almacenar todos los valores de "aleatorio"
 	int fichasjugador1[28]={0}; // vector donde voy a almacenar las fichas del jugador 1
@@ -56,6 +23,26 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 	int final=0; // esta variable determinara cuando se termina la partida
 	int repeticion=0; // esta variable se usa para que cada jugador solo puede poner 1 pieza por ronda;
 	int ganador=0; //esta variable va a determinar quien ha ganado la partida
+	int i=1, j, h;	
+	
+	// los dos bucles siguientes sirven para crear las fichas
+	p->numero1=8;
+	p->numero2=8;
+	for(j=0; j<6; j++)
+	{
+		for(h=(j+1); h<7; h++)
+		{
+			(p+i)->numero1=j;
+			(p+i)->numero2=h;
+			i++;
+		}
+	}
+	for(j=0; j<7; j++) // ahora genero las fichas dobles
+	{
+		(p+i)->numero1=j;
+		(p+i)->numero2=j;
+		i++;
+	} i=0;
 
 	if(cargar==1) // solo se va a ejecutar cuando se empieze una nueva partida
 	{
