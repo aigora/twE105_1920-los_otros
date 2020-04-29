@@ -1,8 +1,60 @@
+#include <stdio.h>
+
 typedef struct
 {
 	int numero1;
 	int numero2;
 } ficha;
+
+
+int buscador_prioridad(int numero,ficha fichas[], int fichasjugador[], int tablero[], int contadortablero);
+int comparador(int numero_1, int numero_2,ficha fichas[], int fichasjugador[], int tablero[], int contadortablero);
+ficha mododificil(ficha fichas[], int fichasjugador[], int tablero[], int contadortablero);
+
+
+int main()
+{
+	ficha fichas[29] = // voy a asociar a cada ficha 1 numero, que corresponde con la posicion ocupada en el vector
+	{
+		{8, 8}, // fila 0. Se que esta ficha no existe pero la necesito para poder dar la vuelta a los numeros de la ficha
+		        // Voy a simbolizar la ficha "inversa" con el numero asociado pero en negativo
+		{0, 1}, // fila 1
+		{0, 2}, // fila 2
+		{0, 3}, // fila 3
+		{0, 4}, // fila 4
+		{0, 5}, // fila 5
+		{0, 6}, // fila 6
+		{1, 2}, // fila 7
+		{1, 3}, // fila 8
+		{1, 4}, // fila 9
+		{1, 5}, // fila 10
+		{1, 6}, // fila 11
+		{2, 3}, // fila 12
+		{2, 4}, // fila 13
+		{2, 5}, // fila 14
+		{2, 6}, // fila 15
+		{3, 4}, // fila 16
+		{3, 5}, // fila 17
+		{3, 6}, // fila 18
+		{4, 5}, // fila 19
+		{4, 6}, // fila 20
+		{5, 6}, // fila 21
+		{0, 0}, // fila 22
+		{1, 1}, // fila 23
+		{2, 2}, // fila 24
+		{3, 3}, // fila 25
+		{4, 4}, // fila 26
+		{5, 5}, // fila 27
+		{6, 6}  // fila 28
+	};
+	
+	int tablero[28] = {-19, -13, -2, 1, 23, 11, 28, -20, -9, 10, 21, -15}; // valores de prueba
+	int contadortablero = 11;
+	int fichasjugador[28] = {14, 27};
+	ficha jugada = mododificil(fichas, fichasjugador, tablero, contadortablero);
+	printf("%i     %i", jugada.numero1, jugada.numero2);
+}
+
 
 int buscador_prioridad(int numero,ficha fichas[], int fichasjugador[], int tablero[], int contadortablero) // esta funcon busca las veces que un numero ha sido jugado, su prioridad
 {
@@ -44,36 +96,40 @@ int comparador(int numero_1, int numero_2,ficha fichas[], int fichasjugador[], i
 }
 
 
-int mododificil(ficha fichas[], int fichasjugador[], int tablero[], int contadortablero, int contadorpozo)
+ficha mododificil(ficha fichas[], int fichasjugador[], int tablero[], int contadortablero)
 {
-	int prioridades[12] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; // en este vector me guardo las posiciones de las fichas por orden de veces que ya se han jugado
+	int prioridades[14] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; // en este vector me guardo las posiciones de las fichas por orden de prioridad para ser jugadas
+	int lado_de_la_jugada[14] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // en este me voy a guardar de que lado se juega esa pieza
+	int lado;
 	int jugabilidad_derecha, jugabilidad_izquierda;
 	int valor_alto;
 	int numero_pieza = 7;
 	int numero_tablero = 7;
-	int posicion;
-	int i; // Setup inicial 
+	int posicion, mejorpieza;
+	int i;
+	ficha respuesta;
+	
+	 // Setup inicial 
 	// empiezo el bucle
 	for(i=0; i<27; i++)
 	{
 		jugabilidad_derecha = 0;
 		jugabilidad_izquierda = 0;
+		lado = 0;
 		
 		if(tablero[contadortablero]>0)
 		{
-		if((fichasjugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador[i]].numero1))
-			jugabilidad_derecha += 1;
-		if((fichasjugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador[i]].numero2))
-			jugabilidad_derecha += 2;
+			if((fichasjugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador[i]].numero1))
+				jugabilidad_derecha += 1;
+			if((fichasjugador[i]>0)&&(fichas[tablero[contadortablero]].numero2==fichas[fichasjugador[i]].numero2))
+				jugabilidad_derecha += 2;
 		}else if(tablero[contadortablero]<0)
 		{
-		if((fichasjugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador[i]].numero1))
-			jugabilidad_derecha +=1;
-		if((fichasjugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador[i]].numero2))
-			jugabilidad_derecha +=2;
+			if((fichasjugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador[i]].numero1))
+				jugabilidad_derecha +=1;
+			if((fichasjugador[i]>0)&&(fichas[tablero[contadortablero]*(-1)].numero1==fichas[fichasjugador[i]].numero2))
+				jugabilidad_derecha +=2;
 		}
-		if (jugabilidad_derecha != 3) // si la posibilidad es 3 la ficha es de numero doble y no hace falta comparar
-		{
 			if(tablero[0]>0)
 			{
 				if((fichasjugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador[i]].numero1))
@@ -87,17 +143,22 @@ int mododificil(ficha fichas[], int fichasjugador[], int tablero[], int contador
 				if((fichasjugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador[i]].numero2))
 				jugabilidad_izquierda += 2;
 			}
-		}
 		// termina la verificación de jugabilidad
 		// paso a verificar prioridad
-		if (jugabilidad_derecha != 0 && jugabilidad_izquierda != 0) // si no es jugable no tenemos que mirar prioridades
+		if (jugabilidad_derecha != 0 || jugabilidad_izquierda != 0) // si no es jugable no tenemos que mirar prioridades
 		{
-			if(jugabilidad_derecha == 3 || jugabilidad_izquierda == 3)
+			if(jugabilidad_derecha == 3)
 			{
-				numero_pieza = fichas[fichasjugador[i]].numero1; // al ser doble miro el 1
-				numero_tablero = numero_pieza; // la prioridad viene dada por las veces que se ha jugado un numero 
+				numero_pieza = fichas[fichasjugador[i]].numero1; // al ser doble miro el numero de la izquierda
+				numero_tablero = numero_pieza;
+				lado = 1; // la prioridad viene dada por las veces que se ha jugado un numero 
 				//en el caso de una pieza doble, la prioridad del numero que queda fuera y el en que se juega son iguales 
 				//porque es el mismo numero
+			} else if( jugabilidad_izquierda == 3)
+			{
+				numero_pieza = fichas[fichasjugador[i]].numero1;
+				numero_tablero = numero_pieza;
+				lado = 2;
 			} else if ((jugabilidad_derecha == 2 && jugabilidad_izquierda == 1 )) // para la explicación de esta parte subiré un documento, para no llenar el codigo más
 			{
 				valor_alto = comparador(fichas[fichasjugador[i]].numero1,fichas[fichasjugador[i]].numero2,fichas,fichasjugador,tablero,contadortablero);
@@ -105,11 +166,12 @@ int mododificil(ficha fichas[], int fichasjugador[], int tablero[], int contador
 				{
 				numero_pieza = fichas[fichasjugador[i]].numero1;
 				numero_tablero = fichas[tablero[0]].numero1;
-				// hay que poner el lado de la jugada, ojo
+				lado = 1;
 				}else
 				{
 				numero_pieza = fichas[fichasjugador[i]].numero2;
-				numero_tablero = fichas[tablero[contadortablero]].numero2;	
+				numero_tablero = fichas[tablero[contadortablero]].numero2;
+				lado = 2;	
 				}
 			}else if ((jugabilidad_derecha == 1 && jugabilidad_izquierda == 2 ))
 			{
@@ -118,35 +180,50 @@ int mododificil(ficha fichas[], int fichasjugador[], int tablero[], int contador
 				{
 				numero_pieza = fichas[fichasjugador[i]].numero1;
 				numero_tablero = fichas[tablero[contadortablero]].numero2;
+				lado = 2;
 				}else
 				{
 				numero_pieza = fichas[fichasjugador[i]].numero2;
-				numero_tablero = fichas[tablero[0]].numero1;	
+				numero_tablero = fichas[tablero[0]].numero1;
+				lado = 1;	
 				}
 			}else if (jugabilidad_izquierda == 2 )
 			{
 				numero_pieza = numero_pieza = fichas[fichasjugador[i]].numero2;
         		numero_tablero =  fichas[tablero[0]].numero1;
-
+        		lado = 1;
 			}
 			else if (jugabilidad_izquierda == 1 )
 			{
 				numero_pieza = numero_pieza = fichas[fichasjugador[i]].numero1;
         		numero_tablero =  fichas[tablero[0]].numero1;
+        		lado = 1;
 			}
-			
+			posicion = (buscador_prioridad(numero_pieza,fichas,fichasjugador,tablero,contadortablero) 
+				+ buscador_prioridad(numero_tablero,fichas,fichasjugador,tablero,contadortablero ) );
+			prioridades[posicion] = i;
+			lado_de_la_jugada[posicion] = lado;
 		}
-	posicion = (buscador_prioridad(numero_pieza,fichas,fichasjugador,tablero,contadortablero) 
-					+ buscador_prioridad(numero_tablero,fichas,fichasjugador,tablero,contadortablero ) );
-	prioridades[posicion] = i;
+
+	}
+	mejorpieza = -1; // al final del bucle, voy a saber la posicion de la pieza que tenga más prioridad
+	for(i=0;i<14;i++)
+	{
+		if (prioridades[i] != -1)
+		{
+			mejorpieza = i;
+		}
 	}
 	
-//
-//	i = 12;
-//	while(prioridades[i]<0 && )
-//	{
-//		// finish return function + what happens if you can't play
-//	}
-//	
-//	
+	if (mejorpieza != -1)
+	{
+	respuesta.numero1 = prioridades[mejorpieza];
+	respuesta.numero2 = lado_de_la_jugada[mejorpieza];	
+	} else 
+	{
+	respuesta.numero1 = -1;
+	respuesta.numero2 = -1;
+	}
+	
+	return respuesta;
 }
