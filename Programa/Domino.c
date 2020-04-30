@@ -19,7 +19,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 	int turno; // esta variable sirve para saber quien empieza a jugar
 	int fichagrande; // esta variable sirve para saber cual es la ficha mas alta de las repartidas
 	int contadortablero=0; // esta variable sirve para contar el numero de fichas que hay en el vector "tablero"
-	int contadorpozo=0; // esta variable sirve para contar el numero de fichas que hay en el vector "pozo"
+	int contadorpozo=-1; // esta variable sirve para contar el numero de fichas que hay en el vector "pozo"
 	int final=0; // esta variable determinara cuando se termina la partida
 	int repeticion=0; // esta variable se usa para que cada jugador solo puede poner 1 pieza por ronda;
 	int ganador=0; //esta variable va a determinar quien ha ganado la partida
@@ -64,89 +64,25 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 		
 		// este bucle sirve para repatir las fichas entre el numero indicado de jugadores usando el vector "valores"
 		// asocio 7 numeros consecutivos a cada jugador, es decir, los 7 primeros al jugador 1, del 8 al 15 al jugador 2 y asi sucesivamente
-		for(j=1; j<=jugadores+1; j++) // repito el bucle tantas veces como jugadores haya, pues no quiero repartir a jugadores "inexistentes" en la partida
+		for(i=0; i<7; i++)
 		{
+			fichasjugador1[i]=valores[i];
+			fichasjugador2[i]=valores[i+7];
+			fichasjugador3[i]=valores[i+14];
+			fichasjugador4[i]=valores[i+21];
 			if(jugadores==2)
 			{
-				switch(j) 
-				{
-					case 1: // reparto al jugador 1
-						for(i=0; i<7; i++)
-						{
-							aleatorio=valores[i];
-							fichasjugador1[i]=aleatorio;
-						}
-						break;
-					case 2: // reparto al jugador 2
-						for(i=0; i<7; i++)
-						{
-							aleatorio=valores[i+7];
-							fichasjugador2[i]=aleatorio;
-						}
-						break;
-					case 3: // introduzco el resto de las fichas en el vector "pozo"
-						for(i=0; i<14; i++)
-						{
-							aleatorio=valores[i+14];
-							pozo[i]=aleatorio;
-						}
-						break;
-				}
+				for(j=0; j<14; j++)
+					pozo[j]=valores[j+14];
+				fichasjugador3[i]=0;
+				fichasjugador4[i]=0;
 				contadorpozo=13;
 			}
-			if(jugadores==3) // si hay 3 jugadores, reparto 7 fichas a cada jugador y las 7 restantes van al pozo
+			if(jugadores==3)
 			{
-				for(i=0; i<7;i++)
-				{
-					switch(j) 
-					{
-						case 1: // reparto al jugador 1
-							aleatorio=valores[i];
-							fichasjugador1[i]=aleatorio;
-							break;
-						case 2: // reparto al jugador 2
-							aleatorio=valores[i+7];
-							fichasjugador2[i]=aleatorio;
-							break;
-						case 3: // reparto al jugador 3
-							aleatorio=valores[i+14];
-							fichasjugador3[i]=aleatorio;
-							break;
-						case 4: // introduzco el resto de las fichas en el vector "pozo"
-							aleatorio=valores[i+21];
-							pozo[i]=aleatorio;
-							break;
-					}
-				}
+				pozo[i]=valores[i+21];
+				fichasjugador4[i]=0;
 				contadorpozo=6;
-			}
-			if(jugadores==4) // si hay 4 jugadores, reparto 7 fichas a cada jugador
-			{
-				for(i=0; i<7;i++)
-				{
-					switch(j) 
-					{
-						case 1: // reparto al jugador 1
-							aleatorio=valores[i];
-							fichasjugador1[i]=aleatorio;
-							break;
-						case 2: // reparto al jugador 2
-							aleatorio=valores[i+7];
-							fichasjugador2[i]=aleatorio;
-							break;
-						case 3: // reparto al jugador 3
-							aleatorio=valores[i+14];
-							fichasjugador3[i]=aleatorio;
-							break;
-						case 4: // reparto al jugador 4
-							aleatorio=valores[i+21];
-							fichasjugador4[i]=aleatorio;
-							break;
-						case 5: // no hay fichas en el pozo
-							break;
-					}
-				}
-				contadorpozo=-1;
 			}
 		}
 		// tras este bucle ya tengo a todos los miembros de la partida con 7 fichas cada uno y las restantes en el pozo. Toca ver quien empieza a jugar
@@ -278,7 +214,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 						modofacil(fichas, fichasjugador2, tablero, &contadortablero, &repeticion, &final);
 						if(repeticion==0&&contadorpozo!=-1)
 						{
-							robarficha(fichasjugador1, pozo, &contadorpozo);
+							robarficha(fichasjugador2, pozo, &contadorpozo);
 							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 						}
 						if(repeticion==1)
@@ -288,7 +224,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 						modofacil(fichas, fichasjugador3, tablero, &contadortablero, &repeticion, &final);
 						if(repeticion==0&&contadorpozo!=-1)
 						{
-							robarficha(fichasjugador1, pozo, &contadorpozo);
+							robarficha(fichasjugador3, pozo, &contadorpozo);
 							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 						}
 						if(repeticion==1)
@@ -298,7 +234,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 						modofacil(fichas, fichasjugador4, tablero, &contadortablero, &repeticion, &final);
 						if(repeticion==0&&contadorpozo!=-1)
 						{
-							robarficha(fichasjugador1, pozo, &contadorpozo);
+							robarficha(fichasjugador4, pozo, &contadorpozo);
 							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 						}
 						if(repeticion==1)
@@ -339,7 +275,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 						mododificil(fichas, fichasjugador2, tablero, &contadortablero, &repeticion, &final);
 						if(repeticion==0&&contadorpozo!=-1)
 						{
-							robarficha(fichasjugador1, pozo, &contadorpozo);
+							robarficha(fichasjugador2, pozo, &contadorpozo);
 							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 						}
 						if(repeticion==1)
@@ -349,7 +285,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 						mododificil(fichas, fichasjugador3, tablero, &contadortablero, &repeticion, &final);
 						if(repeticion==0&&contadorpozo!=-1)
 						{
-							robarficha(fichasjugador1, pozo, &contadorpozo);
+							robarficha(fichasjugador3, pozo, &contadorpozo);
 							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 						}
 						if(repeticion==1)
@@ -359,7 +295,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 						mododificil(fichas, fichasjugador4, tablero, &contadortablero, &repeticion, &final);
 						if(repeticion==0&&contadorpozo!=-1)
 						{
-							robarficha(fichasjugador1, pozo, &contadorpozo);
+							robarficha(fichasjugador4, pozo, &contadorpozo);
 							juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 						}
 						if(repeticion==1)
