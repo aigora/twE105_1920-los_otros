@@ -43,7 +43,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 		(fichas+i)->numero2=j;
 		i++;
 	} i=0;
-
+	
 	if(cargar==1) // solo se va a ejecutar cuando se empieze una nueva partida
 	{
 		srand(time(NULL));
@@ -61,7 +61,6 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 			}while(igual==1);
 			valores[i]=aleatorio;
 		}
-		
 		// este bucle sirve para repatir las fichas entre el numero indicado de jugadores usando el vector "valores"
 		// asocio 7 numeros consecutivos a cada jugador, es decir, los 7 primeros al jugador 1, del 8 al 15 al jugador 2 y asi sucesivamente
 		for(i=0; i<7; i++)
@@ -90,7 +89,6 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 		fichagrande=fichaalta(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, jugadores); // veo cual es la ficha mas alta
 		turno=primerturno(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, jugadores, fichagrande); // veo quien tiene esa ficha
 		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final); // imprimo el tablero de juego
-		
 		// este bucle sirve para ejecutar el primer turno, el cual se realizara de forma automatica
 		// como ya sabemos quien empieza la partida, pone la ficha mas alta en el tablero y se la quita al jugador correspondiente
 		for(i=0; i<28; i++)
@@ -246,7 +244,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 			introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortablero, contadorpozo, final, ganador);
 		} while(final<3);
-		printf("\n\n\t   Â¡Â¡Â¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+		printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	}
 	if(dificultad==2) // se ejecuta el modo de juego dificil
 	{
