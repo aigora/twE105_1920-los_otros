@@ -6,7 +6,8 @@
 void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro n se refiere al numero de jugadores y m a la dificultad
 {
 	FILE *txt;
-	ficha fichas[29], *p=fichas;
+	ficha fichas[29];
+	int i=1, j, h;
 	int aleatorio, igual; // estas dos variables van a servir para el reparto inicial de fichas
 	int cargarpartida[175]; //esta variable va a servir para leer los valores del fichero
 	int valores[28]={0}; // vector donde voy a almacenar todos los valores de "aleatorio"
@@ -22,25 +23,24 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 	int contadorpozo=-1; // esta variable sirve para contar el numero de fichas que hay en el vector "pozo"
 	int final=0; // esta variable determinara cuando se termina la partida
 	int repeticion=0; // esta variable se usa para que cada jugador solo puede poner 1 pieza por ronda;
-	int ganador=0; //esta variable va a determinar quien ha ganado la partida
-	int i=1, j, h;	
+	int ganador=0; //esta variable va a determinar quien ha ganado la partida	
 	
 	// los dos bucles siguientes sirven para crear las fichas
-	p->numero1=8;
-	p->numero2=8;
+	fichas->numero1=8;
+	fichas->numero2=8;
 	for(j=0; j<6; j++)
 	{
 		for(h=(j+1); h<7; h++)
 		{
-			(p+i)->numero1=j;
-			(p+i)->numero2=h;
+			(fichas+i)->numero1=j;
+			(fichas+i)->numero2=h;
 			i++;
 		}
 	}
 	for(j=0; j<7; j++) // ahora genero las fichas dobles
 	{
-		(p+i)->numero1=j;
-		(p+i)->numero2=j;
+		(fichas+i)->numero1=j;
+		(fichas+i)->numero2=j;
 		i++;
 	} i=0;
 
@@ -147,9 +147,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 	{
 		txt=fopen("partida.txt", "r");
 		if(txt==NULL)
-		{
 			printf("Error al abrir el archivo.\n");
-		}
 		else
 		{
 			while(fscanf(txt, "%i", &jugadores)!=EOF)
@@ -423,11 +421,9 @@ void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int ficha
 	// este bucle sirve para imprimir las fichas del pozo
 	printf("\nPozo:   ");
 	for(j=0; j<28; j++)
-	{
 		if(pozo[j]>0)
 			imprimirnormal(fichas, pozo, j);
-	}
-	// en el caso de que la partida haya terminado, imprime el ganador
+	// en el caso de que la partida no haya terminado, imprime el siguiente turno
 	if(final<3)
 		printf("\n\n\t\tTURNO DEL JUGADOR %i\n\n", turno+1);
 }
@@ -460,42 +456,27 @@ void jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int *cont
 		analizaderecha(fichas, fichasjugador1, tablero, contadortablero, &posibilidad, i);
 		analizaizquierda(fichas, fichasjugador1, tablero, &posibilidad, i);
 	}
-	if(contadorpozo!=-1) // en el caso de que siga habiendo fichas en el pozo...
+	do
 	{
-		do
-		{
-    			printf("Opciones para este turno:\n");
-    			printf("1: Poner ficha\n");
+		printf("Opciones para este turno:\n");
+		printf("1: Poner ficha\n");
+		if(contadorpozo!=-1)
 			printf("2: Robar ficha\n");
-			scanf("%i",&eleccion);
-			if(posibilidad==0&&eleccion==1)
-			{
-    				do
-    				{
-    					printf("No puede poner ficha. Hay que robar\n");
-    					scanf("%i",&eleccion);
-				}while(eleccion!=2);
-			}
-    		} while(eleccion<1||eleccion>2);
-	}
-	if(contadorpozo==-1) // si no hay fichas en el pozo
-	{
-		do
-		{
-    			printf("Opciones para este turno:\n");
-    			printf("1: Poner ficha\n");
+		if(contadorpozo==-1)
 			printf("2: No puedo colocar\n");
-			scanf("%i",&eleccion);
-			if(posibilidad==0&&eleccion==1)
+		scanf("%i",&eleccion);
+		if(posibilidad==0&&eleccion==1)
+		{
+			do
 			{
-    				do
-    				{
-    					printf("No puede poner ficha. Hay que pasar.\n");
-    					scanf("%i",&eleccion);
-				} while(eleccion!=2);
-			}
-    		} while(eleccion<1||eleccion>2);
-	}
+				if(contadorpozo!=-1)
+					printf("No puede poner ficha. Hay que robar\n");
+				if(contadorpozo==-1)
+					printf("No puede poner ficha. Hay que pasar.\n");
+				scanf("%i",&eleccion);
+			}while(eleccion!=2);
+		}
+	} while(eleccion<1||eleccion>2);
 	posibilidad=0;
 	switch(eleccion)
 	{
@@ -803,17 +784,13 @@ void modofacil(ficha fichas[], int jugador[], int tablero[], int *contadortabler
 
 void mododificil(ficha fichas[], int jugador[], int tablero[], int *contadortablero, int *repeticion, int *final)
 {
-	dificil repeticiones[7] =
-	{
-		{0, 0},
-		{1, 0},
-		{2, 0},
-		{3, 0},
-		{4, 0},
-		{5, 0},
-		{6, 0}
-	};
 	int i, j, h, ordenados[7], repito=0, cambio;
+	dificil repeticiones[7];
+	for(i=0; i<7; i++)
+	{
+		(repeticiones+i)->numero=i;
+		(repeticiones+i)->repeticiones=0;
+	}
 	for(i=0; i<=*contadortablero; i++) // este bucle sirve para contar cuantas veces aparece cada numero
 	{
 		if(tablero[i]>0)
@@ -1053,9 +1030,7 @@ void introducirfichero(int jugadores, int dificultad, int turno, int fichasjugad
 	int i;
 	txt=fopen("partida.txt", "w");
 	if(txt==NULL)
-	{
 		printf("Error al abrir el archivo.\n");
-	}
 	else
 	{
 		fprintf(txt, "%i\n", jugadores);
