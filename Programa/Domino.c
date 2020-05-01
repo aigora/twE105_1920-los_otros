@@ -142,7 +142,6 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 		introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortablero, contadorpozo, final, ganador);
 	}
-
 	if(cargar==2)
 	{
 		txt=fopen("partida.txt", "r");
@@ -189,7 +188,6 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 		}
 		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 	}
-	
 	if(dificultad==1) // se ejecuta el modo de juego facil
 	{
 		do
@@ -248,9 +246,8 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 			introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortablero, contadorpozo, final, ganador);
 		} while(final<3);
-	printf("\n\n\t   ���EL JUGADOR %i HA GANADO!!!\n", ganador);
+		printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	}
-	
 	if(dificultad==2) // se ejecuta el modo de juego dificil
 	{
 		do
@@ -309,7 +306,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 			juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 			introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortablero, contadorpozo, final, ganador);
 		} while(final<3);
-	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+		printf("\n\n\t   Â¡Â¡Â¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	}
 }
 
@@ -496,7 +493,7 @@ void jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int *cont
 				}
 			}
 			posibilidad=0;
-			printf("�Por que lado la quiere colocar?\n");
+			printf("¿Por que lado la quiere colocar?\n");
 			printf("1: Derecha\n");
 			printf("2: Izquierda\n");
 			scanf("%i",&eleccionlado);
@@ -838,7 +835,6 @@ void mododificil(ficha fichas[], int jugador[], int tablero[], int *contadortabl
 			}
  		}
 	}
-	
 	i=0;
 	j=0;
 	while(i<7) // este bucle sirve para sustituir el numero de repeticiones por el numero repetido
@@ -857,7 +853,6 @@ void mododificil(ficha fichas[], int jugador[], int tablero[], int *contadortabl
 		j=0;
 		i++;
 	}
-	
 	for(h=0; h<7; h++)
 	{
 		for(i=0; i<27; i++)
