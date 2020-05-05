@@ -102,6 +102,7 @@ ficha mododificil(ficha fichas[], int fichasjugador[], int tablero[], int contad
 	int lado_de_la_jugada[14] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // en este me voy a guardar de que lado se juega esa pieza
 	int lado;
 	int jugabilidad_derecha, jugabilidad_izquierda;
+	int derecha = 2, izquierda = 1;
 	int valor_alto;
 	int numero_pieza = 7;
 	int numero_tablero = 7;
@@ -147,18 +148,63 @@ ficha mododificil(ficha fichas[], int fichasjugador[], int tablero[], int contad
 		// paso a verificar prioridad
 		if (jugabilidad_derecha != 0 || jugabilidad_izquierda != 0) // si no es jugable no tenemos que mirar prioridades
 		{
-			if(jugabilidad_derecha == 3)
+			switch ( jugabilidad_derecha )
 			{
-				numero_pieza = fichas[fichasjugador[i]].numero1; // al ser doble miro el numero de la izquierda
-				numero_tablero = numero_pieza;
-				lado = 1; // la prioridad viene dada por las veces que se ha jugado un numero 
-				//en el caso de una pieza doble, la prioridad del numero que queda fuera y el en que se juega son iguales 
-				//porque es el mismo numero
-			} else if( jugabilidad_izquierda == 3)
+    			case 3:
+    				numero_pieza = fichas[fichasjugador[i]].numero1; // al ser doble miro el numero de la izquierda
+					numero_tablero = numero_pieza;
+					lado = derecha;
+        			break;
+        		case 0:                                              // como he comprobado que se puede jugar arriba miro que numero puedo jugar al otro lado
+        			lado = izquierda;
+        			numero_tablero = fichas[tablero[0]].numero1;
+        			
+        			if (jugabilidad_izquierda == 1)
+        			{
+        				numero_pieza = fichas[fichasjugador[i]].numero1;	
+					}else
+					{
+						numero_pieza = fichas[fichasjugador[i]].numero2;
+					}
+        			break;
+        		default:
+        			break;
+			}
+			switch ( jugabilidad_izquierda )
 			{
-				numero_pieza = fichas[fichasjugador[i]].numero1;
-				numero_tablero = numero_pieza;
-				lado = 2;
+    			case 3:
+					numero_pieza = fichas[fichasjugador[i]].numero1;
+					numero_tablero = numero_pieza;
+					lado = izquierda;
+        			break;
+        		case 0:
+        			lado = derecha;
+        			numero_tablero = fichas[tablero[contadortablero]].numero2;
+        			
+        			if (jugabilidad_derecha == 1)
+        			{
+        				numero_pieza = fichas[fichasjugador[i]].numero1;	
+					}else
+					{
+						numero_pieza = fichas[fichasjugador[i]].numero2;
+					}
+        			break;
+        		default:
+        			break;
+			}
+			if (jugabilidad_derecha == jugabilidad_izquierda)
+			{
+				if (jugabilidad_derecha == 1)
+				{
+					numero_pieza = fichas[fichasjugador[i]].numero1;
+					numero_tablero = fichas[tablero[contadortablero]].numero2;
+					lado = derecha;
+				}else
+				{
+					numero_pieza = fichas[fichasjugador[i]].numero2;
+					numero_tablero = fichas[tablero[contadortablero]].numero2;
+					lado = derecha;
+				}
 			} else if ((jugabilidad_derecha == 2 && jugabilidad_izquierda == 1 )) // para la explicación de esta parte subiré un documento, para no llenar el codigo más
 			{
 				valor_alto = comparador(fichas[fichasjugador[i]].numero1,fichas[fichasjugador[i]].numero2,fichas,fichasjugador,tablero,contadortablero);
@@ -166,38 +212,27 @@ ficha mododificil(ficha fichas[], int fichasjugador[], int tablero[], int contad
 				{
 				numero_pieza = fichas[fichasjugador[i]].numero1;
 				numero_tablero = fichas[tablero[0]].numero1;
-				lado = 1;
+				lado = izquierda;
 				}else
 				{
 				numero_pieza = fichas[fichasjugador[i]].numero2;
 				numero_tablero = fichas[tablero[contadortablero]].numero2;
-				lado = 2;	
+				lado = derecha;	
 				}
-			}else if ((jugabilidad_derecha == 1 && jugabilidad_izquierda == 2 ))
+			}else
 			{
 				valor_alto = comparador(fichas[fichasjugador[i]].numero1,fichas[fichasjugador[i]].numero2,fichas,fichasjugador,tablero,contadortablero);
 				if (valor_alto == 1)
 				{
 				numero_pieza = fichas[fichasjugador[i]].numero1;
 				numero_tablero = fichas[tablero[contadortablero]].numero2;
-				lado = 2;
+				lado = derecha;
 				}else
 				{
 				numero_pieza = fichas[fichasjugador[i]].numero2;
 				numero_tablero = fichas[tablero[0]].numero1;
-				lado = 1;	
+				lado = izquierda;	
 				}
-			}else if (jugabilidad_izquierda == 2 )
-			{
-				numero_pieza = numero_pieza = fichas[fichasjugador[i]].numero2;
-        		numero_tablero =  fichas[tablero[0]].numero1;
-        		lado = 1;
-			}
-			else if (jugabilidad_izquierda == 1 )
-			{
-				numero_pieza = numero_pieza = fichas[fichasjugador[i]].numero1;
-        		numero_tablero =  fichas[tablero[0]].numero1;
-        		lado = 1;
 			}
 			posicion = (buscador_prioridad(numero_pieza,fichas,fichasjugador,tablero,contadortablero) 
 				+ buscador_prioridad(numero_tablero,fichas,fichasjugador,tablero,contadortablero ) );
