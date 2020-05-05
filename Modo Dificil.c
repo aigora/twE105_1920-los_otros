@@ -1,59 +1,6 @@
 #include <stdio.h>
+#include "algoritmo_dificil.h"
 
-typedef struct
-{
-	int numero1;
-	int numero2;
-} ficha;
-
-
-int buscador_prioridad(int numero,ficha fichas[], int fichasjugador[], int tablero[], int contadortablero);
-int comparador(int numero_1, int numero_2,ficha fichas[], int fichasjugador[], int tablero[], int contadortablero);
-ficha mododificil(ficha fichas[], int fichasjugador[], int tablero[], int contadortablero);
-
-
-int main()
-{
-	ficha fichas[29] = // voy a asociar a cada ficha 1 numero, que corresponde con la posicion ocupada en el vector
-	{
-		{8, 8}, // fila 0. Se que esta ficha no existe pero la necesito para poder dar la vuelta a los numeros de la ficha
-		        // Voy a simbolizar la ficha "inversa" con el numero asociado pero en negativo
-		{0, 1}, // fila 1
-		{0, 2}, // fila 2
-		{0, 3}, // fila 3
-		{0, 4}, // fila 4
-		{0, 5}, // fila 5
-		{0, 6}, // fila 6
-		{1, 2}, // fila 7
-		{1, 3}, // fila 8
-		{1, 4}, // fila 9
-		{1, 5}, // fila 10
-		{1, 6}, // fila 11
-		{2, 3}, // fila 12
-		{2, 4}, // fila 13
-		{2, 5}, // fila 14
-		{2, 6}, // fila 15
-		{3, 4}, // fila 16
-		{3, 5}, // fila 17
-		{3, 6}, // fila 18
-		{4, 5}, // fila 19
-		{4, 6}, // fila 20
-		{5, 6}, // fila 21
-		{0, 0}, // fila 22
-		{1, 1}, // fila 23
-		{2, 2}, // fila 24
-		{3, 3}, // fila 25
-		{4, 4}, // fila 26
-		{5, 5}, // fila 27
-		{6, 6}  // fila 28
-	};
-	
-	int tablero[28] = {-19, -13, -2, 1, 23, 11, 28, -20, -9, 10, 21, -15}; // valores de prueba
-	int contadortablero = 11;
-	int fichasjugador[28] = {14, 27};
-	ficha jugada = mododificil(fichas, fichasjugador, tablero, contadortablero);
-	printf("%i     %i", jugada.numero1, jugada.numero2);
-}
 
 
 int buscador_prioridad(int numero,ficha fichas[], int fichasjugador[], int tablero[], int contadortablero) // esta funcon busca las veces que un numero ha sido jugado, su prioridad
