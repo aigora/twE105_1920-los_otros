@@ -60,56 +60,56 @@ ficha mododificil(ficha fichas[], int fichasjugador[], int tablero[], int *conta
 		if(tablero[0]>0)
 		{
 			if((fichasjugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador[i]].numero1))
-			jugabilidad_izquierda+=1;
+				jugabilidad_izquierda+=1;
 			if((fichasjugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador[i]].numero2))
-			jugabilidad_izquierda+=2;
+				jugabilidad_izquierda+=2;
 		}
 		else if(tablero[0]<0)
 		{
 			if((fichasjugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador[i]].numero1))
-			jugabilidad_izquierda+=1;
+				jugabilidad_izquierda+=1;
 			if((fichasjugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador[i]].numero2))
-			jugabilidad_izquierda+=2;
+				jugabilidad_izquierda+=2;
 		}
-		// termina la verificaciÛn de jugabilidad
+		// termina la verificaci√≥n de jugabilidad
 		// paso a verificar prioridad
 		if(jugabilidad_derecha!= 0||jugabilidad_izquierda!= 0) // si no es jugable no tenemos que mirar prioridades
 		{
 			switch (jugabilidad_derecha)
 			{
-    			case 3:
-    				numero_pieza=fichas[fichasjugador[i]].numero1; // al ser doble miro el numero de la izquierda
+				case 3:
+					numero_pieza=fichas[fichasjugador[i]].numero1; // al ser doble miro el numero de la izquierda
 					numero_tablero=numero_pieza;
 					lado=derecha;
-        			break;
-        		case 0:                                              // como he comprobado que se puede jugar arriba miro que numero puedo jugar al otro lado
-        			lado=izquierda;
-        			numero_tablero=fichas[tablero[0]].numero1;
-        			if(jugabilidad_izquierda==1)
-        				numero_pieza=fichas[fichasjugador[i]].numero1;	
+					break;
+				case 0:                                              // como he comprobado que se puede jugar arriba miro que numero puedo jugar al otro lado
+					lado=izquierda;
+					numero_tablero=fichas[tablero[0]].numero1;
+					if(jugabilidad_izquierda==1)
+						numero_pieza=fichas[fichasjugador[i]].numero1;	
 					else
 						numero_pieza=fichas[fichasjugador[i]].numero2;
-        			break;
-        		default:
-        			break;
+					break;
+				default:
+					break;
 			}
 			switch(jugabilidad_izquierda)
 			{
-    			case 3:
+    				case 3:
 					numero_pieza= fichas[fichasjugador[i]].numero1;
 					numero_tablero=numero_pieza;
 					lado=izquierda;
-        			break;
-        		case 0:
-        			lado=derecha;
-        			numero_tablero=fichas[tablero[*contadortablero]].numero2;
-        			if(jugabilidad_derecha==1)
-        				numero_pieza=fichas[fichasjugador[i]].numero1;	
+        				break;
+        			case 0:
+					lado=derecha;
+					numero_tablero=fichas[tablero[*contadortablero]].numero2;
+					if(jugabilidad_derecha==1)
+						numero_pieza=fichas[fichasjugador[i]].numero1;	
 					else
 						numero_pieza=fichas[fichasjugador[i]].numero2;
-        			break;
-        		default:
-        			break;
+        				break;
+        			default:
+        				break;
 			}
 			if(jugabilidad_derecha==jugabilidad_izquierda)
 			{
@@ -126,7 +126,7 @@ ficha mododificil(ficha fichas[], int fichasjugador[], int tablero[], int *conta
 					lado=derecha;
 				}
 			}
-			else if((jugabilidad_derecha==2&&jugabilidad_izquierda==1)) // para la explicaciÛn de esta parte subirÈ un documento, para no llenar el codigo m·s
+			else if((jugabilidad_derecha==2&&jugabilidad_izquierda==1)) // para la explicaci√≥n de esta parte subir√© un documento, para no llenar el codigo m√°s
 			{
 				valor_alto=comparador(fichas[fichasjugador[i]].numero1,fichas[fichasjugador[i]].numero2,fichas,fichasjugador,tablero,contadortablero);
 				if(valor_alto==1)
@@ -163,7 +163,7 @@ ficha mododificil(ficha fichas[], int fichasjugador[], int tablero[], int *conta
 			lado_de_la_jugada[posicion]=lado;
 		}
 	}
-	mejorpieza=-1; // al final del bucle, voy a saber la posicion de la pieza que tenga m·s prioridad
+	mejorpieza=-1; // al final del bucle, voy a saber la posicion de la pieza que tenga m√°s prioridad
 	for(i=0;i<14;i++)
 		if (prioridades[i]!=-1)
 			mejorpieza=i;
