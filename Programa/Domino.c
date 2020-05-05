@@ -2,13 +2,6 @@
 #include <time.h>
 #include <stdlib.h>
 #include "Domino.h"
-#include "algoritmo_dificil.h"
-
-typedef struct
-{
-	int numero;
-	int repeticiones;
-} dificil; // esta estructura la voy a emplear en el modo dificil, el primer numero es el numero contado y el segundo es el numero de veces que se repite
 
 void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro n se refiere al numero de jugadores y m a la dificultad
 {
@@ -546,7 +539,6 @@ void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortable
 {
 	int i, j, h, ordenados[7], repito=0, cambio;
 	ficha jugada;
-	dificil repeticiones[7];
 	if(dificultad==1) // se ejecuta el modo facil
 	{
 		for(i=0; i<27; i++)
@@ -679,26 +671,21 @@ void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortable
 	}
 	if(dificultad==2) // se ejecuta el modo dificil
 	{
-		jugada = mododificil(fichas[], fichasjugador[],tablero[], contadortablero)
-		
-		if (jugada.numero2 == -1)
-		{
+		jugada=mododificil(fichas, jugador, tablero, contadortablero);
+		if (jugada.numero2==-1)
 			*repeticion=1;
-		}else 
+		else 
 		{
-			if (jugada.numero2 == 1)
-			{
-				colocarizquierda(fichas, fichasjugador1, tablero, contadortablero, jugada.numero1);
-			}
-			 else if (jugada.numero2 == 2)
-			{
-				colocarderecha(fichas, fichasjugador1, tablero, contadortablero, jugada.numero1);
-			}
+			if(jugada.numero2==1)
+				colocarizquierda(fichas, jugador, tablero, contadortablero, jugada.numero1);
+			 else if(jugada.numero2==2)
+				colocarderecha(fichas, jugador, tablero, contadortablero, jugada.numero1);
 			*repeticion=1;
 			*contadortablero+=1;
 			*final=0;
 		}
 	}
+}
 
 void comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int *final, int turno)
 {
