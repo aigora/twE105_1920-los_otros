@@ -21,3 +21,4 @@ void modomultijugador(int jugadores, int dificultad, int cargar); // esta funcio
 	void comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int *final, int turno);
 	
 void introducirfichero(int jugadores, int dificultad, int turno, int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int contadortablero, int contadorpozo, int final, int ganador);
+

@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "Domino.h"
+#include "algoritmo_dificil.h"
 
 typedef struct
 {
@@ -544,6 +545,7 @@ void robarficha(int jugador[], int pozo[], int *contadorpozo)
 void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortablero, int *repeticion, int *final, int dificultad)
 {
 	int i, j, h, ordenados[7], repito=0, cambio;
+	ficha jugada;
 	dificil repeticiones[7];
 	if(dificultad==1) // se ejecuta el modo facil
 	{
@@ -677,215 +679,26 @@ void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortable
 	}
 	if(dificultad==2) // se ejecuta el modo dificil
 	{
-		for(i=0; i<7; i++)
-		{
-			(repeticiones+i)->numero=i;
-			(repeticiones+i)->repeticiones=0;
-		}
-		for(i=0; i<=*contadortablero; i++) // este bucle sirve para contar cuantas veces aparece cada numero
-		{
-			if(tablero[i]>0)
-			{
-				for(j=0; j<7; j++)
-				{
-					if(fichas[tablero[i]].numero1==repeticiones[j].numero)
-						repeticiones[j].repeticiones+=1;
-					if(fichas[tablero[i]].numero2==repeticiones[j].numero)
-						repeticiones[j].repeticiones+=1;
-				}
-			}
-			if(tablero[i]<0)
-			{
-				for(j=0; j<7; j++)
-				{
-					if(fichas[tablero[i]*(-1)].numero1==repeticiones[j].numero)
-						repeticiones[j].repeticiones+=1;
-					if(fichas[tablero[i]*(-1)].numero2==repeticiones[j].numero)
-						repeticiones[j].repeticiones+=1;
-				}
-			}
-		}
-		for(i=0; i<27; i++)
-		{
-			for(j=0; j<7; j++)
-			{
-				if(fichas[jugador[i]].numero1==repeticiones[j].numero)
-					repeticiones[j].repeticiones+=1;
-				if(fichas[jugador[i]].numero2==repeticiones[j].numero)
-					repeticiones[j].repeticiones+=1;
-			}
-		}
-		for(i=0; i<7; i++)
-			ordenados[i]=repeticiones[i].repeticiones;
-		for(i=0; i<6; i++) // ordeno el numero de repeticiones de mayor a menor
-	 	{
-	 		for(j=i+1; j<7; j++)
-	 		{
-				if(ordenados[i] < ordenados[j])
-				{
-					cambio=ordenados[j];
-					ordenados[j]=ordenados[i];
-					ordenados[i]=cambio;
-				}
-	 		}
-		}
+		jugada = mododificil(fichas[], fichasjugador[],tablero[], contadortablero)
 		
-		i=0;
-		j=0;
-		while(i<7) // este bucle sirve para sustituir el numero de repeticiones por el numero repetido
+		if (jugada.numero2 == -1)
 		{
-			while(j<7)
-			{
-				if((ordenados[i]==repeticiones[j].repeticiones)&&(repito==0))
-				{
-					ordenados[i]=repeticiones[j].numero;
-					repeticiones[j].repeticiones=-1;
-					repito=1;
-				}
-				j++;
-			}
-			repito=0;
-			j=0;
-			i++;
-		}
-		
-		for(h=0; h<7; h++)
+			*repeticion=1;
+		}else 
 		{
-			for(i=0; i<27; i++)
+			if (jugada.numero2 == 1)
 			{
-				if((tablero[0]>0)&&(tablero[*contadortablero]>0)) // si los numeros asociados a ambas fichas son positivos...
-				{
-					if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero2)&&(*repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
-					{
-						for(j=0; j<=*contadortablero; j++)
-							tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-						tablero[0]=jugador[i];
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[*contadortablero]].numero2==fichas[jugador[i]].numero1)&&(*repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
-					{
-						tablero[*contadortablero+1]=jugador[i];
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[*contadortablero]].numero2==fichas[jugador[i]].numero2)&&(*repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
-					{
-						tablero[*contadortablero+1]=jugador[i]*(-1);
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero1)&&(*repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
-					{
-						for(j=0; j<=*contadortablero; j++)
-							tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-						tablero[0]=jugador[i]*(-1);
-						jugador[i]=0;
-						*repeticion=1;
-					}
-				}
-				if((tablero[0]>0)&&(tablero[*contadortablero]<0)) // en el caso de que el primero sea positivo y el segundo negativo...
-				{
-					if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero2)&&(*repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
-					{
-						for(j=0; j<=*contadortablero; j++)
-							tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-						tablero[0]=jugador[i];
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[*contadortablero]*(-1)].numero1==fichas[jugador[i]].numero1)&&(*repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
-					{
-						tablero[*contadortablero+1]=jugador[i];
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[*contadortablero]*(-1)].numero1==fichas[jugador[i]].numero2)&&(*repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
-					{
-						tablero[*contadortablero+1]=jugador[i]*(-1);
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[i]].numero1)&&(*repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
-					{
-						for(j=0; j<=*contadortablero; j++)
-							tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-						tablero[0]=jugador[i]*(-1);
-						jugador[i]=0;
-						*repeticion=1;
-					}
-				}
-				if((tablero[0]<0)&&(tablero[*contadortablero]>0)) // en el caso de que el primero sea negativo y el segundo positivo...
-				{
-					if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero2)&&(*repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
-					{
-						for(j=0; j<=*contadortablero; j++)
-							tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-						tablero[0]=jugador[i];
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[*contadortablero]].numero2==fichas[jugador[i]].numero1)&&(*repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
-					{
-						tablero[*contadortablero+1]=jugador[i];
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[*contadortablero]].numero2==fichas[jugador[i]].numero2)&&(*repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
-					{
-						tablero[*contadortablero+1]=jugador[i]*(-1);
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero1)&&(*repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
-					{
-						for(j=0; j<=*contadortablero; j++)
-							tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-						tablero[0]=jugador[i]*(-1);
-						jugador[i]=0;
-						*repeticion=1;
-					}
-				}
-				if((tablero[0]<0)&&(tablero[*contadortablero]<0)) // si los numeros asociados a ambas fichas son negativos...
-				{
-					if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero2)&&(*repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
-					{
-						for(j=0; j<=*contadortablero; j++)
-							tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-						tablero[0]=jugador[i];
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[*contadortablero]*(-1)].numero1==fichas[jugador[i]].numero1)&&(*repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
-					{
-						tablero[*contadortablero+1]=jugador[i];
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[*contadortablero]*(-1)].numero1==fichas[jugador[i]].numero2)&&(*repeticion==0)&&(fichas[jugador[i]].numero1==ordenados[h]))
-					{
-						tablero[*contadortablero+1]=jugador[i]*(-1);
-						jugador[i]=0;
-						*repeticion=1;
-					}
-					else if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero1)&&(*repeticion==0)&&(fichas[jugador[i]].numero2==ordenados[h]))
-					{
-						for(j=0; j<=*contadortablero; j++)
-							tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-						tablero[0]=jugador[i]*(-1);
-						jugador[i]=0;
-						*repeticion=1;
-					}
-				}
+				colocarizquierda(fichas, fichasjugador1, tablero, contadortablero, jugada.numero1);
 			}
+			 else if (jugada.numero2 == 2)
+			{
+				colocarderecha(fichas, fichasjugador1, tablero, contadortablero, jugada.numero1);
+			}
+			*repeticion=1;
+			*contadortablero+=1;
+			*final=0;
 		}
 	}
-	if(*repeticion==1)
-	{
-		*contadortablero+=1;
-		*final=0;
-	}
-}
 
 void comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int *final, int turno)
 {
