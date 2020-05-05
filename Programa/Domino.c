@@ -229,6 +229,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 		repeticion=0;
 		siguienteturno(jugadores, &turno);
 		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
+		printf("%i\n", contadortablero);
 		introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortablero, contadorpozo, final, ganador);
 	} while(final<3);
 	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
@@ -537,7 +538,7 @@ void robarficha(int jugador[], int pozo[], int *contadorpozo)
 
 void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortablero, int *repeticion, int *final, int dificultad)
 {
-	int i, j, h, ordenados[7], repito=0, cambio;
+	int i, j;
 	ficha jugada;
 	if(dificultad==1) // se ejecuta el modo facil
 	{
@@ -672,8 +673,9 @@ void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortable
 	if(dificultad==2) // se ejecuta el modo dificil
 	{
 		jugada=mododificil(fichas, jugador, tablero, contadortablero);
-		if (jugada.numero2==-1)
-			*repeticion=1;
+		printf("%i %i\n", jugada.numero1, jugada.numero2);
+		if(jugada.numero2==-1)
+			*repeticion=0;
 		else 
 		{
 			if(jugada.numero2==1)
@@ -681,9 +683,12 @@ void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortable
 			 else if(jugada.numero2==2)
 				colocarderecha(fichas, jugador, tablero, contadortablero, jugada.numero1);
 			*repeticion=1;
-			*contadortablero+=1;
-			*final=0;
 		}
+	}
+	if(*repeticion==1)
+	{
+		*contadortablero+=1;
+		*final=0;
 	}
 }
 
