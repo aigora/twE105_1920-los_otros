@@ -54,7 +54,7 @@ int main()
 					modomultijugador(jugadores, dificultad, cargar);
 				}
 				if(cargar==2)
-	    			modomultijugador(jugadores, dificultad, cargar);
+	    				modomultijugador(jugadores, dificultad, cargar);
 				break;
 			case 3:
 				printf("Saliendo del programa\n");
