@@ -67,50 +67,50 @@ ficha mododificil(ficha fichas[], int jugador[], int tablero[], int *contadortab
 			if((jugador[i]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[i]].numero2))
 				jugabilidad_izquierda+=2;
 		}
-		// termina la verificaciÛn de jugabilidad
+		// termina la verificaci√≥n de jugabilidad
 		// paso a verificar prioridad
 		if(jugabilidad_derecha!=0||jugabilidad_izquierda!=0) // si ambos son 0, no es jugable y no tenemos que mirar prioridades
 		{
 			if(jugabilidad_derecha==0) // solo se puede colocar por la izquierda
 			{
-    			lado=izquierda;
-    			if(jugabilidad_izquierda==1 || jugabilidad_izquierda==3)
-    			{
-    				numero_pieza=fichas[jugador[i]].numero2;
-    				numero_tablero=fichas[jugador[i]].numero1;
+    				lado=izquierda;
+    				if(jugabilidad_izquierda==1 || jugabilidad_izquierda==3)
+    				{
+    					numero_pieza=fichas[jugador[i]].numero2;
+    					numero_tablero=fichas[jugador[i]].numero1;
 				}
-    			if(jugabilidad_izquierda==2)
-    			{
-    				numero_pieza=fichas[jugador[i]].numero1;
-    				numero_tablero=fichas[jugador[i]].numero2;
+    				if(jugabilidad_izquierda==2)
+    				{
+    					numero_pieza=fichas[jugador[i]].numero1;
+    					numero_tablero=fichas[jugador[i]].numero2;
 				}
 			}
 			if(jugabilidad_izquierda==0) // solo se puede colocar por la derecha
 			{
-    			lado=derecha;
-    			if(jugabilidad_derecha==1 || jugabilidad_derecha==3)
-    			{
-    				numero_pieza=fichas[jugador[i]].numero2;
-    				numero_tablero=fichas[jugador[i]].numero1;
+    				lado=derecha;
+    				if(jugabilidad_derecha==1 || jugabilidad_derecha==3)
+    				{
+    					numero_pieza=fichas[jugador[i]].numero2;
+    					numero_tablero=fichas[jugador[i]].numero1;
 				}	
 				if(jugabilidad_derecha==2)
 				{
-    				numero_pieza=fichas[jugador[i]].numero1;
-    				numero_tablero=fichas[jugador[i]].numero2;
+    					numero_pieza=fichas[jugador[i]].numero1;
+    					numero_tablero=fichas[jugador[i]].numero2;
 				}
 			}
 			if(jugabilidad_derecha==jugabilidad_izquierda) // si ambas jugabilidades son iguales, la coloco a la derecha
 			{
 				lado=derecha;
 				if(jugabilidad_derecha==1 || jugabilidad_derecha==3)
-    			{
-    				numero_pieza=fichas[jugador[i]].numero2;
-    				numero_tablero=fichas[jugador[i]].numero1;
+				{
+					numero_pieza=fichas[jugador[i]].numero2;
+					numero_tablero=fichas[jugador[i]].numero1;
 				}	
 				if(jugabilidad_derecha==2)
 				{
-    				numero_pieza=fichas[jugador[i]].numero1;
-    				numero_tablero=fichas[jugador[i]].numero2;
+    					numero_pieza=fichas[jugador[i]].numero1;
+    					numero_tablero=fichas[jugador[i]].numero2;
 				}
 			}
 			if(jugabilidad_derecha==3 && (jugabilidad_izquierda==1 || jugabilidad_izquierda==2))
@@ -125,7 +125,7 @@ ficha mododificil(ficha fichas[], int jugador[], int tablero[], int *contadortab
 				numero_pieza=fichas[jugador[i]].numero1; // al ser doble miro el numero de la izquierda
 				numero_tablero=fichas[jugador[i]].numero1;
 			}
-			if(jugabilidad_derecha==2 && jugabilidad_izquierda==1) // para la explicaciÛn de esta parte subirÈ un documento, para no llenar el codigo m·s
+			if(jugabilidad_derecha==2 && jugabilidad_izquierda==1) // para la explicaci√≥n de esta parte subir√© un documento, para no llenar el codigo m√°s
 			{
 				valor_alto=comparador(fichas[jugador[i]].numero1, fichas[jugador[i]].numero2, fichas, jugador, tablero);
 				if(valor_alto==1)
@@ -162,7 +162,7 @@ ficha mododificil(ficha fichas[], int jugador[], int tablero[], int *contadortab
 			lado_de_la_jugada[posicion]=lado;
 		}
 	}
-	for(i=0; i<14; i++) // al final del bucle, voy a saber la posicion de la pieza que tenga m·s prioridad
+	for(i=0; i<14; i++) // al final del bucle, voy a saber la posicion de la pieza que tenga m√°s prioridad
 		if(prioridades[i]!=-1)
 			mejorpieza=i;
 	if(mejorpieza!=-1)
