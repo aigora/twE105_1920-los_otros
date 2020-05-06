@@ -117,11 +117,25 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 			}
 		}
 		
-		if(turno==0)
-			for(i=0; i<7; i++)
+		for(i=0; i<7; i++)
+		{
+			if(turno==0)
 				if(fichasjugador1[i]==0)
 					for(j=0; j<27-i;j++)
 						fichasjugador1[i+j]=fichasjugador1[i+1+j];
+			if(turno==1)
+					if(fichasjugador2[i]==0)
+						for(j=0; j<27-i;j++)
+							fichasjugador2[i+j]=fichasjugador2[i+1+j];
+			if(turno==2)
+					if(fichasjugador3[i]==0)
+						for(j=0; j<27-i;j++)
+							fichasjugador3[i+j]=fichasjugador3[i+1+j];
+			if(turno==3)
+					if(fichasjugador4[i]==0)
+						for(j=0; j<27-i;j++)
+							fichasjugador4[i+j]=fichasjugador4[i+1+j];
+		}
 		
 		siguienteturno(jugadores, &turno); // avanzamos 1 turno, de forma que le toque al siguiente jugador
 		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
@@ -229,7 +243,6 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 		repeticion=0;
 		siguienteturno(jugadores, &turno);
 		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
-		printf("%i\n", contadortablero);
 		introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortablero, contadorpozo, final, ganador);
 	} while(final<3);
 	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
@@ -673,7 +686,7 @@ void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortable
 	if(dificultad==2) // se ejecuta el modo dificil
 	{
 		jugada=mododificil(fichas, jugador, tablero, contadortablero);
-		printf("%i %i\n", jugada.numero1, jugada.numero2);
+		printf("\n%i %i\n", jugada.numero1, jugada.numero2);
 		if(jugada.numero2==-1)
 			*repeticion=0;
 		else 

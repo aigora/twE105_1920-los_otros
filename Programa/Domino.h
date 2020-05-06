@@ -19,8 +19,8 @@ void modomultijugador(int jugadores, int dificultad, int cargar); // esta funcio
 	void robarficha(int jugador[], int pozo[], int *contadorpozo);
 	void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortablero, int *repeticion, int *final, int dificultad);
 	void comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int *final, int turno);
-	int buscador_prioridad(int numero,ficha fichas[], int fichasjugador[], int tablero[], int *contadortablero);
-	int comparador(int numero_1, int numero_2,ficha fichas[], int fichasjugador[], int tablero[], int *contadortablero);
+	int buscador_prioridad(int numero,ficha fichas[], int fichasjugador[], int tablero[]);
+	int comparador(int numero_1, int numero_2,ficha fichas[], int fichasjugador[], int tablero[]);
 	ficha mododificil(ficha fichas[], int fichasjugador[], int tablero[], int *contadortablero);
 	
 void introducirfichero(int jugadores, int dificultad, int turno, int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int contadortablero, int contadorpozo, int final, int ganador);
