@@ -284,7 +284,7 @@ int primerturno(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[]
 void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int tablero[], int pozo[], int jugadores, int turno, int final)
 // esta funcion sirve para imprimir el tablero de juego
 {
-	int i, j;
+	int i, j, numerofichas=0;
 	// este bucle sirve para imprimir las fichas del tablero
 	printf("\nTablero:   ");
 	for(j=0; j<28; j++)
@@ -298,6 +298,7 @@ void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int ficha
 	// este bucle sirve para imprimir las fichas de cada jugador
 	for(j=1; j<=jugadores; j++)
 	{
+		numerofichas=0;
 		printf("Jugador %i: ", j);
 		for(i=0; i<28;i++)
 		{
@@ -309,25 +310,30 @@ void juego(ficha fichas[], int fichasjugador1[], int fichasjugador2[], int ficha
 					break;
 				case 2: //imprime las fichas del jugador 2
 					if(fichasjugador2[i]>0)
-						imprimirnormal(fichas, fichasjugador2, i);
+						numerofichas+=1;
 					break;
 				case 3: //imprime las fichas del jugador 3
 					if(fichasjugador3[i]>0)
-						imprimirnormal(fichas, fichasjugador3, i);
+						numerofichas+=1;
 					break;
 				case 4: //imprime las fichas del jugador 4
 					if(fichasjugador4[i]>0)
-						imprimirnormal(fichas, fichasjugador4, i);
+						numerofichas+=1;
 					break;
 			}
 		}
-		printf("\n");
+		if(j!=1)
+			printf("%i fichas restantes\n", numerofichas);
+		else
+			printf("\n");
 	}
+	numerofichas=0;
 	// este bucle sirve para imprimir las fichas del pozo
-	printf("\nPozo:   ");
 	for(j=0; j<28; j++)
 		if(pozo[j]>0)
-			imprimirnormal(fichas, pozo, j);
+			numerofichas+=1;
+	if(numerofichas!=0)
+		printf("\nPozo: %i fichas restantes\n", numerofichas);
 	// en el caso de que la partida no haya terminado, imprime el siguiente turno
 	if(final<3)
 		printf("\n\n\t\tTURNO DEL JUGADOR %i\n\n", turno+1);
@@ -465,78 +471,78 @@ void analizaizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int *
 			*posibilidad=1;
 	}
 }
-void colocarderecha(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortablero, int eleccionficha)
+void colocarderecha(ficha fichas[], int jugador[], int tablero[], int *contadortablero, int eleccionficha)
 {
 	int j;
 	if(tablero[*contadortablero]>0)
 	{
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[*contadortablero]].numero2==fichas[fichasjugador1[eleccionficha]].numero1))
+		if((jugador[eleccionficha]>0)&&(fichas[tablero[*contadortablero]].numero2==fichas[jugador[eleccionficha]].numero1))
 		{
-			tablero[*contadortablero+1]=fichasjugador1[eleccionficha];
-			fichasjugador1[eleccionficha]=0;
+			tablero[*contadortablero+1]=jugador[eleccionficha];
+			jugador[eleccionficha]=0;
 		}
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[*contadortablero]].numero2==fichas[fichasjugador1[eleccionficha]].numero2))
+		if((jugador[eleccionficha]>0)&&(fichas[tablero[*contadortablero]].numero2==fichas[jugador[eleccionficha]].numero2))
 		{
-			tablero[*contadortablero+1]=fichasjugador1[eleccionficha]*(-1);
-			fichasjugador1[eleccionficha]=0;
+			tablero[*contadortablero+1]=jugador[eleccionficha]*(-1);
+			jugador[eleccionficha]=0;
 		}
 	}
 	if(tablero[*contadortablero]<0)
 	{
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[*contadortablero]*(-1)].numero1==fichas[fichasjugador1[eleccionficha]].numero1))
+		if((jugador[eleccionficha]>0)&&(fichas[tablero[*contadortablero]*(-1)].numero1==fichas[jugador[eleccionficha]].numero1))
 		{
-			tablero[*contadortablero+1]=fichasjugador1[eleccionficha];
-			fichasjugador1[eleccionficha]=0;
+			tablero[*contadortablero+1]=jugador[eleccionficha];
+			jugador[eleccionficha]=0;
 		}
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[*contadortablero]*(-1)].numero1==fichas[fichasjugador1[eleccionficha]].numero2))
+		if((jugador[eleccionficha]>0)&&(fichas[tablero[*contadortablero]*(-1)].numero1==fichas[jugador[eleccionficha]].numero2))
 		{
-			tablero[*contadortablero+1]=fichasjugador1[eleccionficha]*(-1);
-			fichasjugador1[eleccionficha]=0;
+			tablero[*contadortablero+1]=jugador[eleccionficha]*(-1);
+			jugador[eleccionficha]=0;
 		}
 	}
 	for(j=0; j<27-eleccionficha;j++)
-		fichasjugador1[eleccionficha+j]=fichasjugador1[eleccionficha+1+j];
+		jugador[eleccionficha+j]=jugador[eleccionficha+1+j];
 }
 
-void colocarizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortablero, int eleccionficha)
+void colocarizquierda(ficha fichas[], int jugador[], int tablero[], int *contadortablero, int eleccionficha)
 {
 	int j;
 	if(tablero[0]>0)
 	{
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[eleccionficha]].numero2))
+		if((jugador[eleccionficha]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[eleccionficha]].numero2))
 		{
 			for(j=0; j<=*contadortablero; j++)
 				tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-			tablero[0]=fichasjugador1[eleccionficha];
-			fichasjugador1[eleccionficha]=0;
+			tablero[0]=jugador[eleccionficha];
+			jugador[eleccionficha]=0;
 		}
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[0]].numero1==fichas[fichasjugador1[eleccionficha]].numero1))
+		if((jugador[eleccionficha]>0)&&(fichas[tablero[0]].numero1==fichas[jugador[eleccionficha]].numero1))
 		{
 			for(j=0; j<=*contadortablero; j++)
 				tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-			tablero[0]=fichasjugador1[eleccionficha]*(-1);
-			fichasjugador1[eleccionficha]=0;
+			tablero[0]=jugador[eleccionficha]*(-1);
+			jugador[eleccionficha]=0;
 		}
 	}
 	if(tablero[0]<0)
 	{
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[eleccionficha]].numero2))
+		if((jugador[eleccionficha]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[eleccionficha]].numero2))
 		{
 			for(j=0; j<=*contadortablero; j++)
 				tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-			tablero[0]=fichasjugador1[eleccionficha];
-			fichasjugador1[eleccionficha]=0;
+			tablero[0]=jugador[eleccionficha];
+			jugador[eleccionficha]=0;
 		}
-		if((fichasjugador1[eleccionficha]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[fichasjugador1[eleccionficha]].numero1))
+		if((jugador[eleccionficha]>0)&&(fichas[tablero[0]*(-1)].numero2==fichas[jugador[eleccionficha]].numero1))
 		{
 			for(j=0; j<=*contadortablero; j++)
 				tablero[*contadortablero+1-j]=tablero[*contadortablero-j];
-			tablero[0]=fichasjugador1[eleccionficha]*(-1);
-			fichasjugador1[eleccionficha]=0;
+			tablero[0]=jugador[eleccionficha]*(-1);
+			jugador[eleccionficha]=0;
 		}
 	}
 	for(j=0; j<27-eleccionficha;j++)
-		fichasjugador1[eleccionficha+j]=fichasjugador1[eleccionficha+1+j];
+		jugador[eleccionficha+j]=jugador[eleccionficha+1+j];
 }
 
 void robarficha(int jugador[], int pozo[], int *contadorpozo)
@@ -686,7 +692,6 @@ void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortable
 	if(dificultad==2) // se ejecuta el modo dificil
 	{
 		jugada=mododificil(fichas, jugador, tablero, contadortablero);
-		printf("\n%i %i\n", jugada.numero1, jugada.numero2);
 		if(jugada.numero2==-1)
 			*repeticion=0;
 		else 
@@ -698,10 +703,10 @@ void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortable
 			*repeticion=1;
 		}
 	}
-	if(*repeticion==1)
+	if(*repeticion==1) // en el caso de poner ficha
 	{
-		*contadortablero+=1;
-		*final=0;
+		*contadortablero+=1; // hay una ficha más en el tablero
+		*final=0; // la variable final vale 0
 	}
 }
 
