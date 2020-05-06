@@ -124,17 +124,17 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 					for(j=0; j<27-i;j++)
 						fichasjugador1[i+j]=fichasjugador1[i+1+j];
 			if(turno==1)
-					if(fichasjugador2[i]==0)
-						for(j=0; j<27-i;j++)
-							fichasjugador2[i+j]=fichasjugador2[i+1+j];
+				if(fichasjugador2[i]==0)
+					for(j=0; j<27-i;j++)
+						fichasjugador2[i+j]=fichasjugador2[i+1+j];
 			if(turno==2)
-					if(fichasjugador3[i]==0)
-						for(j=0; j<27-i;j++)
-							fichasjugador3[i+j]=fichasjugador3[i+1+j];
+				if(fichasjugador3[i]==0)
+					for(j=0; j<27-i;j++)
+						fichasjugador3[i+j]=fichasjugador3[i+1+j];
 			if(turno==3)
-					if(fichasjugador4[i]==0)
-						for(j=0; j<27-i;j++)
-							fichasjugador4[i+j]=fichasjugador4[i+1+j];
+				if(fichasjugador4[i]==0)
+					for(j=0; j<27-i;j++)
+						fichasjugador4[i+j]=fichasjugador4[i+1+j];
 		}
 		
 		siguienteturno(jugadores, &turno); // avanzamos 1 turno, de forma que le toque al siguiente jugador
@@ -245,7 +245,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 		juego(fichas, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, jugadores, turno, final);
 		introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortablero, contadorpozo, final, ganador);
 	} while(final<3);
-	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
+	printf("\n\n\t   Â¡Â¡Â¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 }
 
 int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[])
@@ -407,7 +407,7 @@ void jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int *cont
 				}
 			}
 			posibilidad=0;
-			printf("¿Por que lado la quiere colocar?\n1: Derecha\n2: Izquierda\n");
+			printf("Â¿Por que lado la quiere colocar?\n1: Derecha\n2: Izquierda\n");
 			scanf("%i",&eleccionlado);
 			do
 			{
@@ -698,14 +698,14 @@ void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortable
 		{
 			if(jugada.numero2==1)
 				colocarizquierda(fichas, jugador, tablero, contadortablero, jugada.numero1);
-			 else if(jugada.numero2==2)
+			 if(jugada.numero2==2)
 				colocarderecha(fichas, jugador, tablero, contadortablero, jugada.numero1);
 			*repeticion=1;
 		}
 	}
 	if(*repeticion==1) // en el caso de poner ficha
 	{
-		*contadortablero+=1; // hay una ficha más en el tablero
+		*contadortablero+=1; // hay una ficha mÃ¡s en el tablero
 		*final=0; // la variable final vale 0
 	}
 }
