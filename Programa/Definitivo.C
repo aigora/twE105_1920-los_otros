@@ -18,26 +18,36 @@ int main()
 		{
 			do
 			{
-				printf("\nSelecciona el numero de jugadores 2-4\n");
+				printf("\nSelecciona el numero de jugadores (entre 2 y 4)\n");
 				printf("0: Salir del Programa\n");
 				scanf("%i", &jugadores);
-				} while(jugadores==1||jugadores<0||jugadores>4);
-				if(jugadores==0)
-				break;
-			do
+			} while(jugadores==1||jugadores<0||jugadores>4);
+			switch(jugadores)
 			{
-				printf("\nSelecciona la dificultad del juego:\n");
-				printf("1: Facil\n");
-				printf("2: Dificil\n");
-				printf("0: Salir del Programa\n");
-				scanf("%i", &dificultad);
-			} while(dificultad!=0 && dificultad!=1 && dificultad!=2);
-			if(dificultad==0)
-				break;
-			modomultijugador(jugadores, dificultad, cargar);
+				case 0:
+					break;
+				default:
+					do
+					{
+						printf("\nSelecciona la dificultad del juego:\n");
+						printf("1: Facil\n");
+						printf("2: Dificil\n");
+						printf("0: Salir del Programa\n");
+						scanf("%i", &dificultad);
+					} while(dificultad!=0 && dificultad!=1 && dificultad!=2);
+					switch(dificultad)
+					{
+						case 0:
+							break;
+						default:
+							modomultijugador(jugadores, dificultad, cargar);
+							break;
+					}
+					break;
+			}
 		}
 		if(cargar==2)
-				modomultijugador(jugadores, dificultad, cargar);
+			modomultijugador(jugadores, dificultad, cargar);
    		do
 		{
 			printf("Quieres Jugar de nuevo?\n");
