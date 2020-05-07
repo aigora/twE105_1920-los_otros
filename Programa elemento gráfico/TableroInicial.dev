@@ -1,5 +1,5 @@
 [Project]
-FileName=Test Graphics.dev
+FileName=TableroInicial.dev
 Name=TableroInicial
 Type=1
 Ver=2
@@ -51,7 +51,7 @@ AutoIncBuildNr=0
 SyncProduct=1
 
 [Unit1]
-FileName=TableroInicial.cpp
+FileName=TableroInicial.C
 CompileCpp=1
 Folder=
 Compile=1
