@@ -1,9 +1,7 @@
 #include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
 #include "Domino.h"
 
-int main()
+main(int argc, char *argv[])
 {
 	int jugadores=0, dificultad=0, cargar;
 	char repetir;
@@ -21,7 +19,7 @@ int main()
 				printf("\nSelecciona el numero de jugadores (entre 2 y 4)\n");
 				printf("0: Salir del Programa\n");
 				scanf("%i", &jugadores);
-			} while(jugadores==1||jugadores<0||jugadores>4);
+			}while(jugadores==1||jugadores<0||jugadores>4);
 			switch(jugadores)
 			{
 				case 0:
@@ -34,7 +32,7 @@ int main()
 						printf("2: Dificil\n");
 						printf("0: Salir del Programa\n");
 						scanf("%i", &dificultad);
-					} while(dificultad!=0 && dificultad!=1 && dificultad!=2);
+					}while(dificultad!=0 && dificultad!=1 && dificultad!=2);
 					switch(dificultad)
 					{
 						case 0:
@@ -56,5 +54,4 @@ int main()
     		scanf("%s",&repetir);
    		} while(repetir!='y' && repetir!='n'&& repetir!='Y'&& repetir!='N');
 	} while(repetir=='y'||repetir=='Y');
-	return 0;
 }
