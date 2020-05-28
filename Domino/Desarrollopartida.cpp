@@ -498,10 +498,7 @@ void jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int *cont
 {
 	int i, eleccion, posibilidad=0, eleccionficha, eleccionlado;
 	for(i=0; i<27; i++) // este bucle sirve para comprobar si puede poner alguna ficha
-	{
-		analizaderecha(fichas, fichasjugador1, tablero, contadortableroderecha, &posibilidad, i);
-		analizaizquierda(fichas, fichasjugador1, tablero, contadortableroizquierda, &posibilidad, i);
-	}
+		analiza(fichas, fichasjugador1, tablero, contadortableroderecha, contadortableroizquierda, &posibilidad, i);
 	do
 	{
 		printf("Opciones para este turno:\n");
@@ -529,38 +526,26 @@ void jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int *cont
 		case 1: // en el caso de que se haya escojido poner ficha y se pueda poner
 			printf("Escoja que ficha quiere poner (empieza por la ficha 1):\n");
 			scanf("%i",&eleccionficha);
-			analizaderecha(fichas, fichasjugador1, tablero, contadortableroderecha, &posibilidad, eleccionficha-1);
-			analizaizquierda(fichas, fichasjugador1, tablero, contadortableroizquierda, &posibilidad, eleccionficha-1);
-			if(posibilidad==0) // si esa ficha no se puede poner te obliga a escoger otra
+			analiza(fichas, fichasjugador1, tablero, contadortableroderecha, contadortableroizquierda, &posibilidad, eleccionficha-1);
+			while(posibilidad==0)
 			{
-				while(posibilidad==0)
-				{
-					printf("Esa ficha no se puede poner, escoja otra.\n");
-					scanf("%i",&eleccionficha);
-					analizaderecha(fichas, fichasjugador1, tablero, contadortableroderecha, &posibilidad, eleccionficha-1);
-					analizaizquierda(fichas, fichasjugador1, tablero, contadortableroizquierda, &posibilidad, eleccionficha-1);
-				}
+				printf("Esa ficha no se puede poner, escoja otra.\n");
+				scanf("%i",&eleccionficha);
+				analiza(fichas, fichasjugador1, tablero, contadortableroderecha, contadortableroizquierda, &posibilidad, eleccionficha-1);
 			}
-			posibilidad=0;
-			printf("¿Por que lado la quiere colocar?\n1: Derecha\n2: Izquierda\n");
-			scanf("%i",&eleccionlado);
-			do
-			{
-				if(eleccionlado==1)
-					analizaderecha(fichas, fichasjugador1, tablero, contadortableroderecha, &posibilidad, eleccionficha-1);
-				if(eleccionlado==2)
-					analizaizquierda(fichas, fichasjugador1, tablero, contadortableroizquierda, &posibilidad, eleccionficha-1);
-				if(posibilidad==0) // si no se puede colocar por el lado escogido
-				{
-					printf("No se puede colocar por ese lado. Escoja el otro\n");
-					scanf("%i",&eleccionlado);
-				}
-			}while(posibilidad==0);
-			// una vez ya sabemos la ficha que queremos colocar y porque lado hacerlo...
-			if(eleccionlado==1)
+			if(posibilidad==1)
 				colocarderecha(fichas, fichasjugador1, tablero, contadortableroderecha, eleccionficha-1);
-			if(eleccionlado==2)
+			if(posibilidad==2)
 				colocarizquierda(fichas, fichasjugador1, tablero, contadortableroizquierda, eleccionficha-1);
+			if(posibilidad==3)
+			{
+				printf("¿Por que lado la quiere colocar?\n1: Derecha\n2: Izquierda\n");
+				scanf("%i",&eleccionlado);
+				if(eleccionlado==1)
+					colocarderecha(fichas, fichasjugador1, tablero, contadortableroderecha, eleccionficha-1);
+				if(eleccionlado==2)
+					colocarizquierda(fichas, fichasjugador1, tablero, contadortableroizquierda, eleccionficha-1);
+			}
 			*repeticion=1;
 			*final=0;
 			break;
@@ -570,41 +555,64 @@ void jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int *cont
 	}
 }
 
-void analizaderecha(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroderecha, int *posibilidad, int i)
+void analiza(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroderecha, int *contadortableroizquierda, int *posibilidad, int i)
 {
-	if(tablero[*contadortableroderecha]>0)
-	{
-		if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroderecha]].numero2==fichas[fichasjugador1[i]].numero1))
-			*posibilidad=1;
-		if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroderecha]].numero2==fichas[fichasjugador1[i]].numero2))
-			*posibilidad=1;
-	}
-	if(tablero[*contadortableroderecha]<0)
-	{
-		if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroderecha]*(-1)].numero1==fichas[fichasjugador1[i]].numero1))
-			*posibilidad=1;
-		if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroderecha]*(-1)].numero1==fichas[fichasjugador1[i]].numero2))
-			*posibilidad=1;
-	}
+	if(fichas[fichasjugador1[i]].numero1!=fichas[fichasjugador1[i]].numero2) // si la ficha observada no es doble
+    {
+        if(tablero[*contadortableroderecha]>0)
+        {
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroderecha]].numero2==fichas[fichasjugador1[i]].numero1))
+                *posibilidad+=1;
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroderecha]].numero2==fichas[fichasjugador1[i]].numero2))
+                *posibilidad+=1;
+        }
+        if(tablero[*contadortableroderecha]<0)
+        {
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroderecha]*(-1)].numero1==fichas[fichasjugador1[i]].numero1))
+                *posibilidad+=1;
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroderecha]*(-1)].numero1==fichas[fichasjugador1[i]].numero2))
+                *posibilidad+=1;
+        }
+        if(tablero[*contadortableroizquierda]>0)
+        {
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroizquierda]].numero1==fichas[fichasjugador1[i]].numero1))
+                *posibilidad+=2;
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroizquierda]].numero1==fichas[fichasjugador1[i]].numero2))
+                *posibilidad+=2;
+        }
+        if(tablero[*contadortableroizquierda]<0)
+        {
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroizquierda]*(-1)].numero2==fichas[fichasjugador1[i]].numero1))
+                *posibilidad+=2;
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroizquierda]*(-1)].numero2==fichas[fichasjugador1[i]].numero2))
+                *posibilidad+=2;
+        }
+    }
+    if(fichas[fichasjugador1[i]].numero1==fichas[fichasjugador1[i]].numero2) // si la ficha observada es doble
+    {
+        if(tablero[*contadortableroderecha]>0)
+        {
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroderecha]].numero2==fichas[fichasjugador1[i]].numero1))
+                *posibilidad+=1;
+        }
+        if(tablero[*contadortableroderecha]<0)
+        {
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroderecha]*(-1)].numero1==fichas[fichasjugador1[i]].numero1))
+                *posibilidad+=1;
+        }
+        if(tablero[*contadortableroizquierda]>0)
+        {
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroizquierda]].numero1==fichas[fichasjugador1[i]].numero1))
+                *posibilidad+=2;
+        }
+        if(tablero[*contadortableroizquierda]<0)
+        {
+            if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroizquierda]*(-1)].numero2==fichas[fichasjugador1[i]].numero1))
+                *posibilidad+=2;
+        }
+    }
 }
 
-void analizaizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroizquierda, int *posibilidad, int i)
-{
-	if(tablero[*contadortableroizquierda]>0)
-	{
-		if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroizquierda]].numero1==fichas[fichasjugador1[i]].numero1))
-			*posibilidad=1;
-		if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroizquierda]].numero1==fichas[fichasjugador1[i]].numero2))
-			*posibilidad=1;
-	}
-	if(tablero[*contadortableroizquierda]<0)
-	{
-		if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroizquierda]*(-1)].numero2==fichas[fichasjugador1[i]].numero1))
-			*posibilidad=1;
-		if((fichasjugador1[i]>0)&&(fichas[tablero[*contadortableroizquierda]*(-1)].numero2==fichas[fichasjugador1[i]].numero2))
-			*posibilidad=1;
-	}
-}
 void colocarderecha(ficha fichas[], int jugador[], int tablero[], int *contadortableroderecha, int eleccionficha)
 {
 	int j;
