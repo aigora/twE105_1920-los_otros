@@ -28,15 +28,25 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 	int final=0; // esta variable determinara cuando se termina la partida
 	int repeticion=0; // esta variable se usa para que cada jugador solo puede poner 1 pieza por ronda;
 	int ganador=0; //esta variable va a determinar quien ha ganado la partida
+	int eleccion, posibilidad, eleccionficha, eleccionlado, numerofichas;
+
+	// estas variables van a servir para controlar el jugador local con el ratón
+	bool running = true;
+    int x, y;
+	Uint32 start;
 
 	// estas variables serviran para la programación de la parte gráfica del juego
     SDL_Surface *fondo=NULL;
+    SDL_Surface *turnoimagen=NULL;
+    SDL_Surface *opcionlocal=NULL;
     SDL_Surface *ficha1[28]={NULL};
     SDL_Surface *ficha2[28]={NULL};
     SDL_Surface *ficha3[28]={NULL};
     SDL_Surface *ficha4[28]={NULL};
     SDL_Surface *tablerografico[55]={NULL};
     SDL_Surface *windowSurface=NULL;
+    SDL_Rect destturno;
+    SDL_Rect destlocal;
     SDL_Rect dest1[28];
     SDL_Rect dest2[28];
     SDL_Rect dest3[28];
@@ -49,7 +59,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
         printf("No se pudo iniciar SDL: %s\n",SDL_GetError());
         exit(1);
     }
-    SDL_Window *window=SDL_CreateWindow("Domino", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 750, 750, SDL_WINDOW_ALLOW_HIGHDPI);
+    SDL_Window *window=SDL_CreateWindow("Domino", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 900, 800, SDL_WINDOW_ALLOW_HIGHDPI);
     windowSurface=SDL_GetWindowSurface(window);
     if(window==NULL) // si no se ha podido crear la ventana emergente
     {
@@ -123,9 +133,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 		// en el domino, empieza a jugar quien tenga la ficha mas alta, empezando por las fichas dobles
 		fichagrande=fichaalta(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4); // veo cual es la ficha mas alta
 		turno=primerturno(fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, fichagrande); // veo quien tiene esa ficha
-		printf("\t\t\tComienzo de la partida\n\n\n");
-		printf("\t\t\tTURNO DEL JUGADOR %i\n\n\n", turno+1);
-		imprimirfondo(fondo, windowSurface, jugadores);
+		imprimirfondo(fondo, turnoimagen, windowSurface, destturno, jugadores, turno);
 		imprimirtablero(tablerografico, windowSurface, desttablero, tablero);
 		if(jugadores==2)
             imprimirfichas2jugadores(ficha1, ficha2, ficha3, windowSurface, dest1, dest2, dest3, fichasjugador1, fichasjugador2, pozo);
@@ -189,8 +197,8 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 							fichasjugador4[i+j]=fichasjugador4[i+1+j];
 		}
 		siguienteturno(jugadores, &turno); // avanzamos 1 turno, de forma que le toque al siguiente jugador
-        introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortableroderecha, contadortableroizquierda, contadorpozo, final, ganador);		printf("\t\t\tTURNO DEL JUGADOR %i\n\n\n", turno+1);
-		imprimirfondo(fondo, windowSurface, jugadores);
+        introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortableroderecha, contadortableroizquierda, contadorpozo, final, ganador);
+		imprimirfondo(fondo, turnoimagen, windowSurface, destturno, jugadores, turno);
 		imprimirtablero(tablerografico, windowSurface, desttablero, tablero);
         if(jugadores==2)
             imprimirfichas2jugadores(ficha1, ficha2, ficha3, windowSurface, dest1, dest2, dest3, fichasjugador1, fichasjugador2, pozo);
@@ -210,7 +218,6 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
             SDL_UpdateWindowSurface(window);
         }
 	}
-
 	if(cargar==2)
 	{
 		txt=fopen("partida.txt", "r");
@@ -257,8 +264,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 			if(i==202)
 				ganador=cargarpartida[i];
 		}
-		printf("\t\t\tTURNO DEL JUGADOR %i\n\n\n", turno+1);
-		imprimirfondo(fondo, windowSurface, jugadores);
+		imprimirfondo(fondo, turnoimagen, windowSurface, destturno, jugadores, turno);
 		imprimirtablero(tablerografico, windowSurface, desttablero, tablero);
         if(jugadores==2)
             imprimirfichas2jugadores(ficha1, ficha2, ficha3, windowSurface, dest1, dest2, dest3, fichasjugador1, fichasjugador2, pozo);
@@ -286,11 +292,154 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 			switch(turno)
 			{
 				case 0: // turno del jugador 1
-					jugadorlocal(fichas, fichasjugador1, tablero, &contadortableroderecha, &contadortableroizquierda, contadorpozo, &repeticion, &final);
+					eleccion=0;
+					posibilidad=0;
+                    eleccionficha=0;
+                    eleccionlado=0;
+                    numerofichas=0;
+					for(i=0; i<28; i++)
+                    {
+                        analiza(fichas, fichasjugador1, tablero, &contadortableroderecha, &contadortableroizquierda, &posibilidad, i);
+                        if(fichasjugador1[i]!=0)
+                            numerofichas+=1;
+                    }
+                    if(contadorpozo!=-1)
+                        opcionlocal=SDL_LoadBMP("Poner-Robar.bmp");
+                    if(contadorpozo==-1)
+                        opcionlocal=SDL_LoadBMP("Poner-Pasar.bmp");
+                    destlocal.x=750;
+                    destlocal.y=0;
+                    destlocal.w=opcionlocal->w;
+                    destlocal.h=opcionlocal->h;
+                    SDL_BlitSurface(opcionlocal,NULL,windowSurface,&destlocal);
+                    do
+                    {
+                        running = true;
+                        while(running)
+                        {
+                            SDL_UpdateWindowSurface(window);
+                            start = SDL_GetTicks();
+                            while(SDL_PollEvent(&windowEvent))
+                            {
+                                switch(windowEvent.type)
+                                {
+                                    case SDL_QUIT:
+                                        running = false;
+                                        break;
+                                    case SDL_MOUSEBUTTONDOWN:
+                                        x = windowEvent.button.x;
+                                        y = windowEvent.button.y;
+                                        if(x>=760&&x<=890&&y>=243&&y<=290)
+                                            eleccion=1;
+                                        if(x>=760&&x<=890&&y>=459&&y<=506)
+                                            eleccion=2;
+                                        running = false;
+                                        break;
+                                }
+                            }
+                        }
+                    } while((posibilidad==0&&eleccion==1)||(eleccion==0));
+                    posibilidad=0;
+                    opcionlocal=SDL_LoadBMP("negro.bmp");
+                    SDL_BlitSurface(opcionlocal,NULL,windowSurface,&destlocal);
+                    switch(eleccion)
+                    {
+                        case 1: // en el caso de que se haya escojido poner ficha y se pueda poner
+                            running = true;
+                            while(running)
+                            {
+                                SDL_UpdateWindowSurface(window);
+                                start = SDL_GetTicks();
+                                while(SDL_PollEvent(&windowEvent))
+                                {
+                                    switch(windowEvent.type)
+                                    {
+                                        case SDL_QUIT:
+                                            running = false;
+                                            break;
+                                        case SDL_MOUSEBUTTONDOWN:
+                                            x = windowEvent.button.x;
+                                            y = windowEvent.button.y;
+                                            for(i=0; i<numerofichas; i++)
+                                            {
+                                                if(jugadores==4)
+                                                {
+                                                    if(x>=248+37*i&&x<=281+37*i&&y>=658&&y<=723)
+                                                        eleccionficha=i+1;
+                                                }
+                                                if(jugadores==3)
+                                                {
+                                                    if(x>=220+36*i&&x<=253+36*i&&y>=658&&y<=723)
+                                                        eleccionficha=i+1;
+                                                }
+                                                if(jugadores==2)
+                                                {
+                                                    if(x>=167+36*i&&x<=200+36*i&&y>=658&&y<=723)
+                                                        eleccionficha=i+1;
+                                                }
+                                            }
+                                            analiza(fichas, fichasjugador1, tablero, &contadortableroderecha, &contadortableroizquierda, &posibilidad, eleccionficha-1);
+                                            if(posibilidad==0)
+                                                posibilidad=0;
+                                            else
+                                                running = false;
+                                            break;
+                                    }
+                                }
+                            }
+                            if(posibilidad==1)
+                                colocarderecha(fichas, fichasjugador1, tablero, &contadortableroderecha, eleccionficha-1);
+                            if(posibilidad==2)
+                                colocarizquierda(fichas, fichasjugador1, tablero, &contadortableroizquierda, eleccionficha-1);
+                            if(posibilidad==3)
+                            {
+                                opcionlocal=SDL_LoadBMP("Izq-Dcha.bmp");
+                                SDL_BlitSurface(opcionlocal,NULL,windowSurface,&destlocal);
+                                do
+                                {
+                                    running = true;
+                                    while(running)
+                                    {
+                                        SDL_UpdateWindowSurface(window);
+                                        start = SDL_GetTicks();
+                                        while(SDL_PollEvent(&windowEvent))
+                                        {
+                                            switch(windowEvent.type)
+                                            {
+                                                case SDL_QUIT:
+                                                    running = false;
+                                                    break;
+                                                case SDL_MOUSEBUTTONDOWN:
+                                                    x = windowEvent.button.x;
+                                                    y = windowEvent.button.y;
+                                                    if(x>=760&&x<=890&&y>=243&&y<=290)
+                                                        eleccionlado=2;
+                                                    if(x>=760&&x<=890&&y>=459&&y<=506)
+                                                        eleccionlado=1;
+                                                    running = false;
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                } while(eleccionlado==0);
+                                if(eleccionlado==1)
+                                    colocarderecha(fichas, fichasjugador1, tablero, &contadortableroderecha, eleccionficha-1);
+                                if(eleccionlado==2)
+                                    colocarizquierda(fichas, fichasjugador1, tablero, &contadortableroizquierda, eleccionficha-1);
+                            }
+                            repeticion=1;
+                            final=0;
+                            break;
+                        case 2:
+                            repeticion=0;
+                            break;
+                    }
+                    opcionlocal=SDL_LoadBMP("negro.bmp");
+                    SDL_BlitSurface(opcionlocal,NULL,windowSurface,&destlocal);
 					if(repeticion==0&&contadorpozo!=-1)
 					{
 						robarficha(fichasjugador1, pozo, &contadorpozo);
-						imprimirfondo(fondo, windowSurface, jugadores);
+						imprimirfondo(fondo, turnoimagen, windowSurface, destturno, jugadores, turno);
 						imprimirtablero(tablerografico, windowSurface, desttablero, tablero);
                         if(jugadores==2)
                             imprimirfichas2jugadores(ficha1, ficha2, ficha3, windowSurface, dest1, dest2, dest3, fichasjugador1, fichasjugador2, pozo);
@@ -318,7 +467,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 					if(repeticion==0&&contadorpozo!=-1)
 					{
 						robarficha(fichasjugador2, pozo, &contadorpozo);
-						imprimirfondo(fondo, windowSurface, jugadores);
+						imprimirfondo(fondo, turnoimagen, windowSurface, destturno, jugadores, turno);
 						imprimirtablero(tablerografico, windowSurface, desttablero, tablero);
                         if(jugadores==2)
                             imprimirfichas2jugadores(ficha1, ficha2, ficha3, windowSurface, dest1, dest2, dest3, fichasjugador1, fichasjugador2, pozo);
@@ -346,7 +495,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 					if(repeticion==0&&contadorpozo!=-1)
 					{
 						robarficha(fichasjugador3, pozo, &contadorpozo);
-						imprimirfondo(fondo, windowSurface, jugadores);
+						imprimirfondo(fondo, turnoimagen, windowSurface, destturno, jugadores, turno);
 						imprimirtablero(tablerografico, windowSurface, desttablero, tablero);
                         if(jugadores==2)
                             imprimirfichas2jugadores(ficha1, ficha2, ficha3, windowSurface, dest1, dest2, dest3, fichasjugador1, fichasjugador2, pozo);
@@ -374,7 +523,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 					if(repeticion==0&&contadorpozo!=-1)
 					{
 						robarficha(fichasjugador4, pozo, &contadorpozo);
-						imprimirfondo(fondo, windowSurface, jugadores);
+						imprimirfondo(fondo, turnoimagen, windowSurface, destturno, jugadores, turno);
 						imprimirtablero(tablerografico, windowSurface, desttablero, tablero);
                         if(jugadores==2)
                             imprimirfichas2jugadores(ficha1, ficha2, ficha3, windowSurface, dest1, dest2, dest3, fichasjugador1, fichasjugador2, pozo);
@@ -405,8 +554,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 		repeticion=0;
 		siguienteturno(jugadores, &turno);
 		introducirfichero(jugadores, dificultad, turno, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4, tablero, pozo, contadortableroderecha, contadortableroizquierda, contadorpozo, final, ganador);
-		printf("\t\t\tTURNO DEL JUGADOR %i\n\n\n", turno+1);
-		imprimirfondo(fondo, windowSurface, jugadores);
+		imprimirfondo(fondo, turnoimagen, windowSurface, destturno, jugadores, turno);
 		imprimirtablero(tablerografico, windowSurface, desttablero, tablero);
         if(jugadores==2)
             imprimirfichas2jugadores(ficha1, ficha2, ficha3, windowSurface, dest1, dest2, dest3, fichasjugador1, fichasjugador2, pozo);
@@ -492,67 +640,6 @@ void siguienteturno(int jugadores, int *turno)
 		*turno=(*turno+1)%3;
 	if(jugadores==4)
 		*turno=(*turno+1)%4;
-}
-
-void jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroderecha, int *contadortableroizquierda, int contadorpozo, int *repeticion, int *final)
-{
-	int i, eleccion, posibilidad=0, eleccionficha, eleccionlado;
-	for(i=0; i<27; i++) // este bucle sirve para comprobar si puede poner alguna ficha
-		analiza(fichas, fichasjugador1, tablero, contadortableroderecha, contadortableroizquierda, &posibilidad, i);
-	do
-	{
-		printf("Opciones para este turno:\n");
-		printf("1: Poner ficha\n");
-		if(contadorpozo!=-1)
-			printf("2: Robar ficha\n");
-		if(contadorpozo==-1)
-			printf("2: No puedo colocar\n");
-		scanf("%i",&eleccion);
-		if(posibilidad==0&&eleccion==1)
-		{
-			do
-			{
-				if(contadorpozo!=-1)
-					printf("No puede poner ficha. Hay que robar\n");
-				if(contadorpozo==-1)
-					printf("No puede poner ficha. Hay que pasar.\n");
-				scanf("%i",&eleccion);
-			}while(eleccion!=2);
-		}
-	} while(eleccion<1||eleccion>2);
-	posibilidad=0;
-	switch(eleccion)
-	{
-		case 1: // en el caso de que se haya escojido poner ficha y se pueda poner
-			printf("Escoja que ficha quiere poner (empieza por la ficha 1):\n");
-			scanf("%i",&eleccionficha);
-			analiza(fichas, fichasjugador1, tablero, contadortableroderecha, contadortableroizquierda, &posibilidad, eleccionficha-1);
-			while(posibilidad==0)
-			{
-				printf("Esa ficha no se puede poner, escoja otra.\n");
-				scanf("%i",&eleccionficha);
-				analiza(fichas, fichasjugador1, tablero, contadortableroderecha, contadortableroizquierda, &posibilidad, eleccionficha-1);
-			}
-			if(posibilidad==1)
-				colocarderecha(fichas, fichasjugador1, tablero, contadortableroderecha, eleccionficha-1);
-			if(posibilidad==2)
-				colocarizquierda(fichas, fichasjugador1, tablero, contadortableroizquierda, eleccionficha-1);
-			if(posibilidad==3)
-			{
-				printf("¿Por que lado la quiere colocar?\n1: Derecha\n2: Izquierda\n");
-				scanf("%i",&eleccionlado);
-				if(eleccionlado==1)
-					colocarderecha(fichas, fichasjugador1, tablero, contadortableroderecha, eleccionficha-1);
-				if(eleccionlado==2)
-					colocarizquierda(fichas, fichasjugador1, tablero, contadortableroizquierda, eleccionficha-1);
-			}
-			*repeticion=1;
-			*final=0;
-			break;
-		case 2:
-			*repeticion=0;
-			break;
-	}
 }
 
 void analiza(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroderecha, int *contadortableroizquierda, int *posibilidad, int i)

@@ -10,10 +10,9 @@ void modomultijugador(int jugadores, int dificultad, int cargar); // esta funcio
 	int fichaalta(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[]);
 	int primerturno(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int fichagrande);
 	void siguienteturno(int jugadores, int *turno);
-	void jugadorlocal(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroderecha, int *contadortableroizquierda, int contadorpozo, int *repeticion, int *final);
-        void analiza(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroderecha, int *contadortableroizquierda, int *posibilidad, int i);
-		void colocarderecha(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroderecha, int eleccionficha);
-		void colocarizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroizquierda, int eleccionficha);
+	void analiza(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroderecha, int *contadortableroizquierda, int *posibilidad, int i);
+	void colocarderecha(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroderecha, int eleccionficha);
+	void colocarizquierda(ficha fichas[], int fichasjugador1[], int tablero[], int *contadortableroizquierda, int eleccionficha);
 	void robarficha(int jugador[], int pozo[], int *contadorpozo);
 	void desarrollo(ficha fichas[], int jugador[], int tablero[], int *contadortableroderecha, int *contadortableroizquierda, int *repeticion, int *final, int dificultad);
 	void comprueba(int fichasjugador1[], int fichasjugador2[], int fichasjugador3[], int fichasjugador4[], int *final, int turno);
@@ -26,5 +25,5 @@ void introducirfichero(int jugadores, int dificultad, int turno, int fichasjugad
 void imprimirfichas4jugadores(SDL_Surface *ficha1[], SDL_Surface *ficha2[], SDL_Surface *ficha3[], SDL_Surface *ficha4[], SDL_Surface *windowSurface, SDL_Rect dest1[], SDL_Rect dest2[], SDL_Rect dest3[], SDL_Rect dest4[], int jugador1[], int jugador2[], int jugador3[], int jugador4[]);
 void imprimirfichas3jugadores(SDL_Surface *ficha1[], SDL_Surface *ficha2[], SDL_Surface *ficha3[], SDL_Surface *ficha4[], SDL_Surface *windowSurface, SDL_Rect dest1[], SDL_Rect dest2[], SDL_Rect dest3[], SDL_Rect dest4[], int jugador1[], int jugador2[], int jugador3[], int pozo[]);
 void imprimirfichas2jugadores(SDL_Surface *ficha1[], SDL_Surface *ficha2[], SDL_Surface *ficha3[], SDL_Surface *windowSurface, SDL_Rect dest1[], SDL_Rect dest2[], SDL_Rect dest3[], int jugador1[], int jugador2[], int pozo[]);
-void imprimirfondo(SDL_Surface *fondo, SDL_Surface *windowSurface, int jugadores);
+void imprimirfondo(SDL_Surface *fondo, SDL_Surface *turnoimagen, SDL_Surface *windowSurface, SDL_Rect destturno, int jugadores, int turno);
 void imprimirtablero(SDL_Surface *tablerografico[], SDL_Surface *windowSurface, SDL_Rect desttablero[], int tablero[]);

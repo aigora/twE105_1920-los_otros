@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1590654632 source:c:\users\sergi\documents\sergio\universidad\primer curso\segundo cuatri\informática\programa\domino\desarrollopartida.cpp
+1590690795 source:c:\users\sergi\documents\sergio\universidad\primer curso\segundo cuatri\informática\programa\domino\desarrollopartida.cpp
 	<iostream>
 	<stdio.h>
 	<time.h>
@@ -361,14 +361,14 @@
 	"begin_code.h"
 	"close_code.h"
 
-1590605099 c:\users\sergi\documents\sergio\universidad\primer curso\segundo cuatri\informática\programa\domino\domino.h
+1590686025 c:\users\sergi\documents\sergio\universidad\primer curso\segundo cuatri\informática\programa\domino\domino.h
 	<SDL2/SDL.h>
 
 1590576989 source:c:\users\sergi\documents\sergio\universidad\primer curso\segundo cuatri\informática\programa\domino\menu.cpp
 	<stdio.h>
 	"Domino.h"
 
-1590592521 source:c:\users\sergi\documents\sergio\universidad\primer curso\segundo cuatri\informática\programa\domino\elementografico.cpp
+1590686047 source:c:\users\sergi\documents\sergio\universidad\primer curso\segundo cuatri\informática\programa\domino\elementografico.cpp
 	<iostream>
 	<stdio.h>
 	<SDL2/SDL.h>

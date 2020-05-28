@@ -307,7 +307,7 @@ void imprimirfichas2jugadores(SDL_Surface *ficha1[], SDL_Surface *ficha2[], SDL_
     }
 }
 
-void imprimirfondo(SDL_Surface *fondo, SDL_Surface *windowSurface, int jugadores)
+void imprimirfondo(SDL_Surface *fondo, SDL_Surface *turnoimagen, SDL_Surface *windowSurface, SDL_Rect destturno, int jugadores, int turno)
 {
     if(jugadores==2)
         fondo=SDL_LoadBMP("tablero2.bmp"); //carga la imagen del tablero
@@ -321,6 +321,19 @@ void imprimirfondo(SDL_Surface *fondo, SDL_Surface *windowSurface, int jugadores
         exit(1);
     }
     SDL_BlitSurface(fondo,NULL,windowSurface,NULL);
+    if(turno==0)
+        turnoimagen=SDL_LoadBMP("Turno1.bmp"); //carga la imagen del tablero
+    if(turno==1)
+        turnoimagen=SDL_LoadBMP("Turno2.bmp"); //carga la imagen del tablero
+    if(turno==2)
+        turnoimagen=SDL_LoadBMP("Turno3.bmp"); //carga la imagen del tablero
+    if(turno==3)
+        turnoimagen=SDL_LoadBMP("Turno4.bmp"); //carga la imagen del tablero
+    destturno.x=0;
+    destturno.y=750;
+    destturno.w=turnoimagen->w;
+    destturno.h=turnoimagen->h;
+    SDL_BlitSurface(turnoimagen,NULL,windowSurface,&destturno);
 }
 
 void imprimirtablero(SDL_Surface *tablerografico[], SDL_Surface *windowSurface, SDL_Rect desttablero[], int tablero[])
