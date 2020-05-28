@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -141,17 +142,10 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
             imprimirfichas3jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, pozo);
         if(jugadores==4)
             imprimirfichas4jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4);
-        while(true)
-        {
-            if(SDL_PollEvent(&windowEvent))
-            {
-                if(SDL_QUIT==windowEvent.type)
-                {
-                    break;
-                }
-            }
+
             SDL_UpdateWindowSurface(window);
-        }
+            Sleep(1000);
+
 		// este bucle sirve para ejecutar el primer turno, el cual se realizara de forma automatica
 		// como ya sabemos quien empieza la partida, pone la ficha mas alta en el tablero y se la quita al jugador correspondiente
 		for(i=0; i<28; i++)
@@ -206,17 +200,8 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
             imprimirfichas3jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, pozo);
         if(jugadores==4)
             imprimirfichas4jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4);
-        while(true)
-        {
-            if(SDL_PollEvent(&windowEvent))
-            {
-                if(SDL_QUIT==windowEvent.type)
-                {
-                    break;
-                }
-            }
-            SDL_UpdateWindowSurface(window);
-        }
+        SDL_UpdateWindowSurface(window);
+        Sleep(1000);
 	}
 	if(cargar==2)
 	{
@@ -272,17 +257,8 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
             imprimirfichas3jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, pozo);
         if(jugadores==4)
             imprimirfichas4jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4);
-        while(true)
-        {
-            if(SDL_PollEvent(&windowEvent))
-            {
-                if(SDL_QUIT==windowEvent.type)
-                {
-                    break;
-                }
-            }
-            SDL_UpdateWindowSurface(window);
-        }
+        SDL_UpdateWindowSurface(window);
+        Sleep(1000);
 	}
 
 	do //este bucle contiene el desarrollo de la partida
@@ -447,17 +423,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                             imprimirfichas3jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, pozo);
                         if(jugadores==4)
                             imprimirfichas4jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4);
-                        while(true)
-                        {
-                            if(SDL_PollEvent(&windowEvent))
-                            {
-                                if(SDL_QUIT==windowEvent.type)
-                                {
-                                    break;
-                                }
-                            }
-                            SDL_UpdateWindowSurface(window);
-                        }
+                        SDL_UpdateWindowSurface(window);
 					}
 					if(repeticion==1)
 						ganador=1;
@@ -475,17 +441,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                             imprimirfichas3jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, pozo);
                         if(jugadores==4)
                             imprimirfichas4jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4);
-                        while(true)
-                        {
-                            if(SDL_PollEvent(&windowEvent))
-                            {
-                                if(SDL_QUIT==windowEvent.type)
-                                {
-                                    break;
-                                }
-                            }
-                            SDL_UpdateWindowSurface(window);
-                        }
+                        SDL_UpdateWindowSurface(window);
 					}
 					if(repeticion==1)
 						ganador=2;
@@ -503,17 +459,8 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                             imprimirfichas3jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, pozo);
                         if(jugadores==4)
                             imprimirfichas4jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4);
-                        while(true)
-                        {
-                            if(SDL_PollEvent(&windowEvent))
-                            {
-                                if(SDL_QUIT==windowEvent.type)
-                                {
-                                    break;
-                                }
-                            }
-                            SDL_UpdateWindowSurface(window);
-                        }
+                        SDL_UpdateWindowSurface(window);
+                        Sleep(1000);
 					}
 					if(repeticion==1)
 						ganador=3;
@@ -531,17 +478,8 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                             imprimirfichas3jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, pozo);
                         if(jugadores==4)
                             imprimirfichas4jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4);
-                        while(true)
-                        {
-                            if(SDL_PollEvent(&windowEvent))
-                            {
-                                if(SDL_QUIT==windowEvent.type)
-                                {
-                                    break;
-                                }
-                            }
-                            SDL_UpdateWindowSurface(window);
-                        }
+                        SDL_UpdateWindowSurface(window);
+                        Sleep(1000);
 					}
 					if(repeticion==1)
 						ganador=4;
@@ -562,17 +500,8 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
             imprimirfichas3jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, pozo);
         if(jugadores==4)
             imprimirfichas4jugadores(ficha1, ficha2, ficha3, ficha4, windowSurface, dest1, dest2, dest3, dest4, fichasjugador1, fichasjugador2, fichasjugador3, fichasjugador4);
-        while(true)
-        {
-            if(SDL_PollEvent(&windowEvent))
-            {
-                if(SDL_QUIT==windowEvent.type)
-                {
-                    break;
-                }
-            }
-            SDL_UpdateWindowSurface(window);
-        }
+        SDL_UpdateWindowSurface(window);
+        Sleep(1000);
 	} while(final<3);
 	printf("\n\n\t   ¡¡¡EL JUGADOR %i HA GANADO!!!\n", ganador);
 	SDL_FreeSurface(fondo);
