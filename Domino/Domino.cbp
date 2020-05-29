@@ -40,7 +40,6 @@
 		<Unit filename="Domino.h" />
 		<Unit filename="Elementografico.cpp" />
 		<Unit filename="Menu.cpp" />
-		<Unit filename="SDL2.dll" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
