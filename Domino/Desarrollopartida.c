@@ -1,4 +1,3 @@
-#include <iostream>
 #include <windows.h>
 #include <stdio.h>
 #include <time.h>
@@ -32,7 +31,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
 	int eleccion, posibilidad, eleccionficha, eleccionlado, numerofichas;
 
 	// estas variables van a servir para controlar el jugador local con el ratón
-	bool running = true;
+	_Bool running = 1;
     int x, y;
 	Uint32 start;
 
@@ -288,7 +287,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                     SDL_BlitSurface(opcionlocal,NULL,windowSurface,&destlocal);
                     do
                     {
-                        running = true;
+                        running = 1;
                         while(running)
                         {
                             SDL_UpdateWindowSurface(window);
@@ -298,7 +297,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                                 switch(windowEvent.type)
                                 {
                                     case SDL_QUIT:
-                                        running = false;
+                                        running = 0;
                                         break;
                                     case SDL_MOUSEBUTTONDOWN:
                                         x = windowEvent.button.x;
@@ -307,7 +306,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                                             eleccion=1;
                                         if(x>=760&&x<=890&&y>=459&&y<=506)
                                             eleccion=2;
-                                        running = false;
+                                        running = 0;
                                         break;
                                 }
                             }
@@ -319,7 +318,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                     switch(eleccion)
                     {
                         case 1: // en el caso de que se haya escojido poner ficha y se pueda poner
-                            running = true;
+                            running = 1;
                             while(running)
                             {
                                 SDL_UpdateWindowSurface(window);
@@ -329,7 +328,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                                     switch(windowEvent.type)
                                     {
                                         case SDL_QUIT:
-                                            running = false;
+                                            running = 0;
                                             break;
                                         case SDL_MOUSEBUTTONDOWN:
                                             x = windowEvent.button.x;
@@ -356,7 +355,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                                             if(posibilidad==0)
                                                 posibilidad=0;
                                             else
-                                                running = false;
+                                                running = 0;
                                             break;
                                     }
                                 }
@@ -371,7 +370,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                                 SDL_BlitSurface(opcionlocal,NULL,windowSurface,&destlocal);
                                 do
                                 {
-                                    running = true;
+                                    running = 1;
                                     while(running)
                                     {
                                         SDL_UpdateWindowSurface(window);
@@ -381,7 +380,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                                             switch(windowEvent.type)
                                             {
                                                 case SDL_QUIT:
-                                                    running = false;
+                                                    running = 0;
                                                     break;
                                                 case SDL_MOUSEBUTTONDOWN:
                                                     x = windowEvent.button.x;
@@ -390,7 +389,7 @@ void modomultijugador(int jugadores, int dificultad, int cargar) // el parametro
                                                         eleccionlado=2;
                                                     if(x>=760&&x<=890&&y>=459&&y<=506)
                                                         eleccionlado=1;
-                                                    running = false;
+                                                    running = 0;
                                                     break;
                                             }
                                         }

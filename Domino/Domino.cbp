@@ -36,10 +36,16 @@
 			<Add option="-lmingw32 -lSDL2main -lSDL2" />
 			<Add directory="SDL/lib" />
 		</Linker>
-		<Unit filename="Desarrollopartida.cpp" />
+		<Unit filename="Desarrollopartida.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="Domino.h" />
-		<Unit filename="Elementografico.cpp" />
-		<Unit filename="Menu.cpp" />
+		<Unit filename="Elementografico.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
